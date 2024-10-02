@@ -168,7 +168,7 @@
           </li>
           <li class="nav-item mx-2">
             <a
-              href="https://www.github.com/creativetimofficial/vue-material-kit"
+              href="https://github.com/xuzzz-eatman/datatrading"
               class="nav-link d-flex cursor-pointer align-items-center"
               target="_blank"
               rel="noopener noreferrer"
