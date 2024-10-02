@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+  ipfs0:
+    image: ipfs/go-ipfs:latest
+    volumes:
+      - ./ipfs0:/data/ipfs
+    ports:
+      - "4001:4001"
+      - "5001:5001"
+      - "8080:8080"
+
+  cluster0:
+    image: ipfs/ipfs-cluster:latest
+    depends_on:
+      - ipfs0
+    environment:
+      CLUSTER_PEERNAME: cluster0
+      CLUSTER_SECRET: ${CLUSTER_SECRET}
+      CLUSTER_IPFSHTTP_NODEMULTIADDRESS: /dns4/ipfs0/tcp/5001
+      CLUSTER_CRDT_TRUSTEDPEERS: '*'
+    volumes:
+      - ./cluster0:/data/ipfs-cluster
+    ports:
+      - "9094:9094"
+      - "9096:9096"
+
+  ipfs1:
+    image: ipfs/go-ipfs:latest
+    volumes:
+      - ./ipfs1:/data/ipfs
+    ports:
+      - "4101:4001"
+      - "5101:5001"
+      - "8180:8080"
+
+  cluster1:
+    image: ipfs/ipfs-cluster:latest
+    depends_on:
+      - ipfs1
+    environment:
+      CLUSTER_PEERNAME: cluster1
+      CLUSTER_SECRET: ${CLUSTER_SECRET}
+      CLUSTER_IPFSHTTP_NODEMULTIADDRESS: /dns4/ipfs1/tcp/5001
+      CLUSTER_CRDT_TRUSTEDPEERS: '*'
+    volumes:
+      - ./cluster1:/data/ipfs-cluster
+    ports:
+      - "9194:9094"
+      - "9196:9096"
