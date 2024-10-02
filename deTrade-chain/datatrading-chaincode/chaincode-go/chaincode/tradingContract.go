@@ -9,114 +9,108 @@ import (
 	"log"
 	"strconv"
 	"time"
+
 	"github.com/golang/protobuf/ptypes"
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
-
 
 type SmartContract struct {
 	contractapi.Contract
 }
 
-
 // Insert struct field in alphabetic order => to achieve determinism across languages
 // golang keeps the order when marshal to json but doesn't order automatically
 
-/* 
-	DatasetList stores all IDs of the dataset
-	Use this to search all dataset
+/*
+DatasetList stores all IDs of the dataset
+Use this to search all dataset
 */
 type DatasetList struct {
-	DatasetIDs   []string `json:"DatasetIDs"`
-	DLID 		   string `json:"DLID"`
-	Next		   int	  `json:"Next"`
+	DatasetIDs []string `json:"DatasetIDs"`
+	DLID       string   `json:"DLID"`
+	Next       int      `json:"Next"`
 }
 
 /*
-	OrderList stores all IDs of the order
-	Use this to search all orders
-	Next: current number of orders, new order, Next++
+OrderList stores all IDs of the order
+Use this to search all orders
+Next: current number of orders, new order, Next++
 */
 type OrderList struct {
-	Next		   int	  `json:"Next"`
-	OLID 		   string `json:"OLID"`
-	OrderIDs     []string `json:"OrderIDs"`
-
+	Next     int      `json:"Next"`
+	OLID     string   `json:"OLID"`
+	OrderIDs []string `json:"OrderIDs"`
 }
 
-//	UserList stores all IDs of the user
+// UserList stores all IDs of the user
 type UserList struct {
-	ULID          string `json:"ULID"`
-	UserIDs     []string `json:"UserIDs"`
-}
-
-/* 
-	Dataset stores details about a dataset
-	Hash: verify the encrypted data
-	N_subset: number of subsets in the dataset
-	Owner: the owner of the dataset
-	Price: price of the dataset
-	Tags: tags of the dataset which used to verify the keys of each subset
-	Describtion: description of the dataset
-	IPFSAddress: IPFS address of the dataset
-*/
-type Dataset struct {
-	DatasetID      string  `json:"DatasetID"`
-	Describtion    string  `json:"Description"`
-	Hash		   string  `json:"Hash"`
-	IpfsAddress    string  `json:"IpfsAddress"`
-	N_subset	   int	   `json:"N_subset"`
-	Owner          string  `json:"Owner"`
-	Price          int 	   `json:"Price"`
-	Tags         []string  `json:"Tags"`
-	Title		   string  `json:"Title"`
-}
-
-/* 
-	Order stores details about a order
-	Buyer: the buyer of the dataset
-	DatasetID: the ID of the dataset
-	OrderID: the ID of the order
-	PayHash: submit the seed to get paid
-	EndTime: the end time of the order
-*/
-type Order struct {
-	Buyer          string  `json:"Buyer"`
-	DatasetID      string  `json:"DatasetID"`
-	EndTime		   time.Time  `json:"EndTime"`
-	OrderID        string  `json:"OrderID"`
-	PayHash        string  `json:"PayHash"`
+	ULID    string   `json:"ULID"`
+	UserIDs []string `json:"UserIDs"`
 }
 
 /*
-	User stores details about a user
-	DataSets: the IDs of the datasets that the user owns
-	Ords: the IDs of the orders that the user has made
-	UID: the ID of the user
-	Value: the money of the user
+Dataset stores details about a dataset
+Hash: verify the encrypted data
+N_subset: number of subsets in the dataset
+Owner: the owner of the dataset
+Price: price of the dataset
+Tags: tags of the dataset which used to verify the keys of each subset
+Describtion: description of the dataset
+IPFSAddress: IPFS address of the dataset
 */
-type User struct {
-	BuyOrderIDs  []string 	 `json:"BuyOrderIDs"`
-	DatasetIDs	 []string 	 `json:"DatasetIDs"`
-	Nonce		   int		 `json:"Nonce"`
-	SellOrderIDs []string 	 `json:"SellOrderIDs"`
-	UID            string 	 `json:"UID"`
-	Value 		   int	 	 `json:"Value"`	
+type Dataset struct {
+	DatasetID   string   `json:"DatasetID"`
+	Describtion string   `json:"Description"`
+	Hash        string   `json:"Hash"`
+	IpfsAddress string   `json:"IpfsAddress"`
+	N_subset    int      `json:"N_subset"`
+	Owner       string   `json:"Owner"`
+	Price       int      `json:"Price"`
+	Tags        []string `json:"Tags"`
+	Title       string   `json:"Title"`
 }
 
+/*
+Order stores details about a order
+Buyer: the buyer of the dataset
+DatasetID: the ID of the dataset
+OrderID: the ID of the order
+PayHash: submit the seed to get paid
+EndTime: the end time of the order
+*/
+type Order struct {
+	Buyer     string    `json:"Buyer"`
+	DatasetID string    `json:"DatasetID"`
+	EndTime   time.Time `json:"EndTime"`
+	OrderID   string    `json:"OrderID"`
+	PayHash   string    `json:"PayHash"`
+}
 
-
+/*
+User stores details about a user
+DataSets: the IDs of the datasets that the user owns
+Ords: the IDs of the orders that the user has made
+UID: the ID of the user
+Value: the money of the user
+*/
+type User struct {
+	BuyOrderIDs  []string `json:"BuyOrderIDs"`
+	DatasetIDs   []string `json:"DatasetIDs"`
+	Nonce        int      `json:"Nonce"`
+	SellOrderIDs []string `json:"SellOrderIDs"`
+	UID          string   `json:"UID"`
+	Value        int      `json:"Value"`
+}
 
 func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) error {
 	// InitLedger adds basic data structures to the ledger (three lists)
 
 	// TODO only admin can do this
 
-
 	datasetList := DatasetList{
-		DatasetIDs:   []string{},
-		DLID:         "DatasetList",
-		Next:          0,
+		DatasetIDs: []string{},
+		DLID:       "DatasetList",
+		Next:       0,
 	}
 	datasetListJSON, err := json.Marshal(datasetList)
 	if err != nil {
@@ -127,9 +121,9 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 		return fmt.Errorf("failed to put to world state. %v", err)
 	}
 	orderList := OrderList{
-		Next:          0,
-		OLID:         "OrderList",
-		OrderIDs:     []string{},
+		Next:     0,
+		OLID:     "OrderList",
+		OrderIDs: []string{},
 	}
 	orderListJSON, err := json.Marshal(orderList)
 	if err != nil {
@@ -140,8 +134,8 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 		return fmt.Errorf("failed to put to world state. %v", err)
 	}
 	userList := UserList{
-		ULID:         "UserList",
-		UserIDs:     []string{},
+		ULID:    "UserList",
+		UserIDs: []string{},
 	}
 	userList.UserIDs = append(userList.UserIDs, "contract")
 	userListJSON, err := json.Marshal(userList)
@@ -154,10 +148,10 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 	}
 	user := User{
 		BuyOrderIDs:  []string{},
-		DatasetIDs:	  []string{},
+		DatasetIDs:   []string{},
 		SellOrderIDs: []string{},
-		UID:            "contract",
-		Value:          0,
+		UID:          "contract",
+		Value:        0,
 	}
 	userJSON, err := json.Marshal(user)
 	if err != nil {
@@ -170,7 +164,6 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 
 	return nil
 }
-
 
 func (s *SmartContract) CreateDataset(ctx contractapi.TransactionContextInterface, title string, description string, hash string, ipfsAddress string, n_subset int, owner string, price int, tags []string) error {
 	/*
@@ -189,15 +182,15 @@ func (s *SmartContract) CreateDataset(ctx contractapi.TransactionContextInterfac
 	}
 
 	dataset := Dataset{
-		DatasetID:      "dataset"+strconv.Itoa(datasetList.Next + 1),
-		Describtion:    description,
-		Hash:		    hash,
-		IpfsAddress:    ipfsAddress,
-		N_subset:	    n_subset,
-		Owner:          owner,
-		Price:          price,
-		Tags:           tags,
-		Title:		    title,
+		DatasetID:   strconv.Itoa(datasetList.Next + 1),
+		Describtion: description,
+		Hash:        hash,
+		IpfsAddress: ipfsAddress,
+		N_subset:    n_subset,
+		Owner:       owner,
+		Price:       price,
+		Tags:        tags,
+		Title:       title,
 	}
 	datasetJSON, err := json.Marshal(dataset)
 	if err != nil {
@@ -239,14 +232,13 @@ func (s *SmartContract) CreateDataset(ctx contractapi.TransactionContextInterfac
 	return nil
 }
 
-
 func (s *SmartContract) CreateOrder(ctx contractapi.TransactionContextInterface, buyer string, datasetID string, payHash string) error {
 	/*
 		CreateOrder creates a new order
 		add to OrderList
 		update user's order
 	*/
-	
+
 	var dataset Dataset
 	datasetAsBytes, err := ctx.GetStub().GetState(datasetID)
 	if err != nil {
@@ -267,7 +259,7 @@ func (s *SmartContract) CreateOrder(ctx contractapi.TransactionContextInterface,
 		return err
 	}
 	// add order
-	orderList.OrderIDs = append(orderList.OrderIDs, "order" + strconv.Itoa(orderList.Next + 1))
+	orderList.OrderIDs = append(orderList.OrderIDs, strconv.Itoa(orderList.Next+1))
 	orderList.Next += 1
 	orderListJSON, err := json.Marshal(orderList)
 	if err != nil {
@@ -287,11 +279,11 @@ func (s *SmartContract) CreateOrder(ctx contractapi.TransactionContextInterface,
 		return fmt.Errorf("failed to create timestamp for receipt: %v", err)
 	}
 	order := Order{
-		Buyer:          buyer,
-		DatasetID:      datasetID,
-		OrderID:        "order" + strconv.Itoa(orderList.Next),
-		PayHash:        payHash,
-		EndTime:        timestamp,
+		Buyer:     buyer,
+		DatasetID: datasetID,
+		OrderID:   "order" + strconv.Itoa(orderList.Next),
+		PayHash:   payHash,
+		EndTime:   timestamp,
 	}
 	orderJSON, err := json.Marshal(order)
 	if err != nil {
@@ -403,11 +395,11 @@ func (s *SmartContract) CreateUser(ctx contractapi.TransactionContextInterface, 
 	}
 	user := User{
 		BuyOrderIDs:  []string{},
-		DatasetIDs:	  []string{},
-		Nonce:		   0,
+		DatasetIDs:   []string{},
+		Nonce:        0,
 		SellOrderIDs: []string{},
-		UID:            uID,
-		Value:          value,
+		UID:          uID,
+		Value:        value,
 	}
 	userJSON, err := json.Marshal(user)
 	if err != nil {
@@ -585,7 +577,6 @@ func (s *SmartContract) HandleOrder(ctx contractapi.TransactionContextInterface,
 		return err
 	}
 
-
 	// check if order is expired
 	if timestamp.After(order.EndTime) && !order.EndTime.IsZero() {
 		contract.Value, err = sub(contract.Value, dataset.Price)
@@ -631,11 +622,11 @@ func (s *SmartContract) HandleOrder(ctx contractapi.TransactionContextInterface,
 		if err != nil {
 			return err
 		}
-		buyer.Value, err = add(buyer.Value, n * dataset.Price / dataset.N_subset)
+		buyer.Value, err = add(buyer.Value, n*dataset.Price/dataset.N_subset)
 		if err != nil {
 			return err
 		}
-		seller.Value, err = add(seller.Value, dataset.Price - n * dataset.Price / dataset.N_subset)
+		seller.Value, err = add(seller.Value, dataset.Price-n*dataset.Price/dataset.N_subset)
 		if err != nil {
 			return err
 		}
@@ -681,8 +672,6 @@ func (s *SmartContract) HandleOrder(ctx contractapi.TransactionContextInterface,
 	return nil
 }
 
-
-
 func checkInitialized(ctx contractapi.TransactionContextInterface) (bool, error) {
 	userListAsBytes, err := ctx.GetStub().GetState("UserList")
 	if err != nil {
@@ -696,9 +685,8 @@ func checkInitialized(ctx contractapi.TransactionContextInterface) (bool, error)
 	return true, nil
 }
 
-
 /*
-	Add Cash System
+Add Cash System
 */
 func (s *SmartContract) Mint(ctx contractapi.TransactionContextInterface, uID string, value int) error {
 	/*
@@ -729,10 +717,9 @@ func (s *SmartContract) Mint(ctx contractapi.TransactionContextInterface, uID st
 	return nil
 }
 
-
 func (s *SmartContract) Burn(ctx contractapi.TransactionContextInterface, uID string, value int) error {
 	/*
-		Brun money from user
+		Burn money from user
 		Only bank can invoke this function
 	*/
 	userAsBytes, err := ctx.GetStub().GetState(uID)
@@ -763,7 +750,6 @@ func (s *SmartContract) Burn(ctx contractapi.TransactionContextInterface, uID st
 	return nil
 }
 
-
 // add two number checking for overflow
 func add(b int, q int) (int, error) {
 
@@ -781,7 +767,7 @@ func add(b int, q int) (int, error) {
 // sub two number checking for overflow
 func sub(b int, q int) (int, error) {
 
-	// sub two number checking 
+	// sub two number checking
 	if q <= 0 {
 		return 0, fmt.Errorf("Error: the subtraction number is %d, it should be greater than 0", q)
 	}
@@ -793,7 +779,3 @@ func sub(b int, q int) (int, error) {
 
 	return diff, nil
 }
-
-
-
-

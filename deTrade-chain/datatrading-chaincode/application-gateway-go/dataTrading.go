@@ -67,26 +67,26 @@ func main() {
 	contract := network.GetContract(chaincodeName)
 
 	initLedger(contract)
-	createUser(contract,"u1")
-	createUser(contract,"u2")
-	mint(contract,"u1")
-	mint(contract,"u2")
-	getUser(contract,"u1")
-	getUser(contract,"u2")
-	createDataset(contract,"u1")
-	getDataset(contract,"dataset1")
-	createOrder(contract,"u2")
-	getOrder(contract,"order1")
+	createUser(contract, "u1")
+	createUser(contract, "u2")
+	mint(contract, "u1")
+	mint(contract, "u2")
+	getUser(contract, "u1")
+	getUser(contract, "u2")
+	createDataset(contract, "u1")
+	getDataset(contract, "dataset1")
+	createOrder(contract, "u2")
+	getOrder(contract, "order1")
 	getDatasetList(contract)
 	getOrderList(contract)
-	getUser(contract,"u1")
-	getUser(contract,"u2")
-	getUser(contract,"contract")
-	handleOrder(contract,"order1","1","1234")
-	getUser(contract,"u1")
-	getUser(contract,"u2")
-	getUser(contract,"contract")
-	getOrder(contract,"order1")
+	getUser(contract, "u1")
+	getUser(contract, "u2")
+	getUser(contract, "contract")
+	handleOrder(contract, "order1", "1", "1234")
+	getUser(contract, "u1")
+	getUser(contract, "u2")
+	getUser(contract, "contract")
+	getOrder(contract, "order1")
 	// createOrder(contract)
 	// getUser(contract,"u1")
 	// getUser(contract,"u2")
@@ -174,12 +174,11 @@ func initLedger(contract *client.Contract) {
 	fmt.Printf("*** Transaction committed successfully\n")
 }
 
-
 // create a new user
 
 func createUser(contract *client.Contract, ID string) {
 	fmt.Println("\n--> Submit Transaction: CreateUser")
-	_, err := contract.SubmitTransaction("CreateUser",ID,"0")
+	_, err := contract.SubmitTransaction("CreateUser", ID, "0")
 	if err != nil {
 		panic(fmt.Errorf("failed to evaluate transaction: %w", err))
 	}
@@ -189,7 +188,7 @@ func createUser(contract *client.Contract, ID string) {
 // Evaluate GetUser
 func getUser(contract *client.Contract, ID string) {
 	fmt.Println("\n--> Evaluate Transaction: GetUser, function returns a user")
-	evaluateResult, err := contract.EvaluateTransaction("GetUser",ID)
+	evaluateResult, err := contract.EvaluateTransaction("GetUser", ID)
 	if err != nil {
 		panic(fmt.Errorf("failed to evaluate transaction: %w", err))
 	}
@@ -201,44 +200,42 @@ func getUser(contract *client.Contract, ID string) {
 func mint(contract *client.Contract, ID string) {
 	fmt.Println("\n--> Submit Transaction: Mint")
 
-	_, err := contract.SubmitTransaction("Mint",ID,"100")
+	_, err := contract.SubmitTransaction("Mint", ID, "100")
 	if err != nil {
 		panic(fmt.Errorf("failed to evaluate transaction: %w", err))
 	}
 
 	fmt.Printf("*** Transaction committed successfully\n")
 }
-
 
 // Evaluate Burn.
 func burn(contract *client.Contract, ID string) {
 	fmt.Println("\n--> Submit Transaction: Burn")
 
-	_, err := contract.SubmitTransaction("Burn",ID,"100")
+	_, err := contract.SubmitTransaction("Burn", ID, "100")
 	if err != nil {
 		panic(fmt.Errorf("failed to evaluate transaction: %w", err))
 	}
 
 	fmt.Printf("*** Transaction committed successfully\n")
 }
-
 
 // Create a new dataset
 func createDataset(contract *client.Contract, ID string) {
 	fmt.Println("\n--> Submit Transaction: CreateDataset")
 	tags := []string{"1", "2", "3"}
-	jsonBytes, _:= json.Marshal(tags)
-	_, err := contract.SubmitTransaction("CreateDataset","牛子数据","description","hash","ipfsAddress","2",ID,"100",string(jsonBytes))
+	jsonBytes, _ := json.Marshal(tags)
+	_, err := contract.SubmitTransaction("CreateDataset", "牛子数据", "description", "hash", "ipfsAddress", "2", ID, "100", string(jsonBytes))
 	if err != nil {
 		panic(fmt.Errorf("failed to evaluate transaction: %w", err))
 	}
 	fmt.Printf("*** Transaction committed successfully\n")
 }
 
-//Create a new order
+// Create a new order
 func createOrder(contract *client.Contract, ID string) {
 	fmt.Println("\n--> Submit Transaction: CreateOrder")
-	_, err := contract.SubmitTransaction("CreateOrder",ID,"dataset1","hash")
+	_, err := contract.SubmitTransaction("CreateOrder", ID, "dataset1", "hash")
 	if err != nil {
 		panic(fmt.Errorf("failed to evaluate transaction: %w", err))
 	}
@@ -248,7 +245,7 @@ func createOrder(contract *client.Contract, ID string) {
 // Evaluate GetDataset.
 func getDataset(contract *client.Contract, datasetID string) {
 	fmt.Println("\n--> Evaluate Transaction: GetDataset, function returns a dataset")
-	evaluateResult, err := contract.EvaluateTransaction("GetDataset",datasetID)
+	evaluateResult, err := contract.EvaluateTransaction("GetDataset", datasetID)
 	if err != nil {
 		panic(fmt.Errorf("failed to evaluate transaction: %w", err))
 	}
@@ -259,14 +256,13 @@ func getDataset(contract *client.Contract, datasetID string) {
 // Evaluate GetOrder.
 func getOrder(contract *client.Contract, orderID string) {
 	fmt.Println("\n--> Evaluate Transaction: GetOrder, function returns a order")
-	evaluateResult, err := contract.EvaluateTransaction("GetOrder",orderID)
+	evaluateResult, err := contract.EvaluateTransaction("GetOrder", orderID)
 	if err != nil {
 		panic(fmt.Errorf("failed to evaluate transaction: %w", err))
 	}
 	result := formatJSON(evaluateResult)
-	fmt.Printf("*** Result:%s\n",result)
+	fmt.Printf("*** Result:%s\n", result)
 }
-
 
 // Evaluate GetDatasetList.
 func getDatasetList(contract *client.Contract) {
@@ -289,15 +285,17 @@ func getOrderList(contract *client.Contract) {
 	result := formatJSON(evaluateResult)
 	fmt.Printf("*** Result:%s\n", result)
 }
+
 // Handle Order
 func handleOrder(contract *client.Contract, orderID string, n string, payword string) {
 	fmt.Println("\n--> Submit Transaction: HandleOrder")
-	_, err := contract.SubmitTransaction("HandleOrder",orderID,n,payword)
+	_, err := contract.SubmitTransaction("HandleOrder", orderID, n, payword)
 	if err != nil {
 		panic(fmt.Errorf("failed to evaluate transaction: %w", err))
 	}
 	fmt.Printf("***Transaction committed successfully\n")
 }
+
 // Format JSON data
 func formatJSON(data []byte) string {
 	var prettyJSON bytes.Buffer
@@ -306,10 +304,6 @@ func formatJSON(data []byte) string {
 	}
 	return prettyJSON.String()
 }
-
-
-
-
 
 // Submit transaction asynchronously, blocking until the transaction has been sent to the orderer, and allowing
 // this thread to process the chaincode response (e.g. update a UI) without waiting for the commit notification
@@ -332,5 +326,3 @@ func formatJSON(data []byte) string {
 
 // 	fmt.Printf("*** Transaction committed successfully\n")
 // }
-
-
