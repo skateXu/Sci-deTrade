@@ -1,5 +1,3 @@
-
-
 const grpc = require('@grpc/grpc-js');
 const { connect, signers } = require('@hyperledger/fabric-gateway');
 const crypto = require('node:crypto');
@@ -100,13 +98,15 @@ async function main() {
         await initLedger(contract);
         await createUser(contract, "u1");
         await createUser(contract, "u2");
-        await mint(contract, "u1");
-        await mint(contract, "u2");
+        await mint(contract, "u1", "500");
+        await mint(contract, "u2", "500");
         await getUser(contract, "u1");
         await getUser(contract, "u2");
-        await createDataset(contract, "u1");
+        tags = ["1","2","3"];
+        tags = JSON.stringify(tags)
+        await createDataset(contract, "dataset1", "the first dataset", "hash", "ipfs", "5", "u1", "100", tags);
         await getDataset(contract, "dataset1");
-        await createOrder(contract, "u2");
+        await createOrder(contract, "u2", "dataset1", "100");
         await getOrder(contract, "order1");
         await getDatasetList(contract);
         await getOrderList(contract);
@@ -114,7 +114,7 @@ async function main() {
         await getUser(contract, "u2");
         await getUser(contract, "contract");
         await handleOrder(contract, "order1", "1", "1234");
-        await burn(contract, "u1");
+        await burn(contract, "u1", "10");
         await getUser(contract, "u1");
         await getUser(contract, "u2");
         await getUser(contract, "contract");
@@ -210,45 +210,43 @@ func mint(contract *client.Contract, ID string) {
 	fmt.Printf("*** Transaction committed successfully\n")
 }
 */
-async function mint(contract, ID){
+async function mint(contract, ID, value){
     console.log(
         '\n--> Submit Transaction: Mint, function mints new asset on the ledger'
     );
 
-    await contract.submitTransaction('Mint', ID, '100');
+    await contract.submitTransaction('Mint', ID, value);
 
     console.log('*** Transaction committed successfully');
 }
 
 
-async function burn(contract, ID){
+async function burn(contract, ID, value){
     console.log(
         '\n--> Submit Transaction: Burn, function burns asset on the ledger'
     );
 
-    await contract.submitTransaction('Burn', ID, '100');
+    await contract.submitTransaction('Burn', ID, value);
 
     console.log('*** Transaction committed successfully');
 }
 
 
-async function createDataset(contract, ID){
+async function createDataset(contract, title, description, hash, ipfsAddress, n_subset, owner, price, tags){
     console.log(
         '\n--> Submit Transaction: CreateDataset, creates new dataset on the ledger'
     );
-    tags = ["1","2","3"];
-    tags = JSON.stringify(tags)
-    await contract.submitTransaction('CreateDataset', '牛子数据', 'description', 'hash', 'ipfsAddress', '2', ID, '100', tags);
+    await contract.submitTransaction('CreateDataset', title, description, hash, ipfsAddress, n_subset, owner, price, tags);
 
     console.log('*** Transaction committed successfully');
 }
 
-async function createOrder(contract, ID){
+async function createOrder(contract, buyer, datasetID, payHash){
     console.log(
         '\n--> Submit Transaction: CreateOrder, creates new order on the ledger'
     );
 
-    await contract.submitTransaction('CreateOrder', ID, 'dataset1', 'hash');
+    await contract.submitTransaction('CreateOrder', buyer, datasetID, payHash);
 
     console.log('*** Transaction committed successfully');
 }

@@ -399,7 +399,7 @@ func (s *SmartContract) CreateUser(ctx contractapi.TransactionContextInterface, 
 		Nonce:        0,
 		SellOrderIDs: []string{},
 		UID:          uID,
-		Value:        value,
+		Value:        0,
 	}
 	userJSON, err := json.Marshal(user)
 	if err != nil {
