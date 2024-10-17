@@ -42,31 +42,6 @@ async function main() {
         // Get the smart contract from the network.
         const contract = network.getContract(config.chaincodeName);
 
-        // Initialize a set of asset data on the ledger using the chaincode 'InitLedger' function.
-        await initLedger(contract);
-        await createUser(contract, "u1");
-        await createUser(contract, "u2");
-        await mint(contract, "u1", "500");
-        await mint(contract, "u2", "500");
-        await getUser(contract, "u1");
-        await getUser(contract, "u2");
-        tags = ["1","2","3"];
-        tags = JSON.stringify(tags)
-        await createDataset(contract, "dataset1", "the first dataset", "hash", "ipfs", "5", "u1", "100", tags);
-        await getDataset(contract, "dataset1");
-        await createOrder(contract, "u2", "dataset1", "100");
-        await getOrder(contract, "order1");
-        await getDatasetList(contract);
-        await getOrderList(contract);
-        await getUser(contract, "u1");
-        await getUser(contract, "u2");
-        await getUser(contract, "contract");
-        await handleOrder(contract, "order1", "1", "1234");
-        await burn(contract, "u1", "10");
-        await getUser(contract, "u1");
-        await getUser(contract, "u2");
-        await getUser(contract, "contract");
-        await getOrder(contract, "order1");
     } finally {
         gateway.close();
         client.close();
