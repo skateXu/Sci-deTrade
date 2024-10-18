@@ -52,7 +52,7 @@ import DefaultInfoCard from "../../../examples/cards/infoCards/DefaultInfoCard.v
             />
             <DefaultInfoCard
               class="mt-3"
-              icon="check_circle"
+              icon="verified"
               title="数据质量"
               description="独特交易模式，验证数据有效性"
             />
