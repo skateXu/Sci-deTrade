@@ -46,7 +46,7 @@ import DefaultInfoCard from "../../../examples/cards/infoCards/DefaultInfoCard.v
           <div class="row justify-content-start mt-5">
             <DefaultInfoCard
               class="mt-3"
-              icon="verified"
+              icon="currency_exchange"
               title="交易安全"
               description="保证交易原子性，避免交易纠纷"
             />
