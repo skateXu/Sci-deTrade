@@ -182,7 +182,7 @@ func (s *SmartContract) CreateDataset(ctx contractapi.TransactionContextInterfac
 	}
 
 	dataset := Dataset{
-		DatasetID:   strconv.Itoa(datasetList.Next + 1),
+		DatasetID:   "dataset" + strconv.Itoa(datasetList.Next+1),
 		Describtion: description,
 		Hash:        hash,
 		IpfsAddress: ipfsAddress,
