@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted,ref } from "vue";
 import { useRoute } from 'vue-router';
-import axios from 'axios';
+import axios from "@/api/axios";
 import NavbarDefault from "../../components/NavbarDefault.vue";
 
 // image
@@ -44,7 +44,7 @@ const uploadDataset = async () => {
   formData.append('file', dataset.value.file);
 
   try {
-    const response = await axios.post('/api/upload', formData, {
+    const response = await axios.post('/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -62,7 +62,7 @@ const listDataset = async () => {
   dataset.value.Tags = tagsInput.value.split(',').map(tag => tag.trim());
 
   try {
-    await axios.post('/api/list-dataset', {
+    await axios.post('/list-dataset', {
       ...dataset.value,
       Owner: store.user.id
     });

@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted,ref } from "vue";
 import { useRoute } from 'vue-router';
-import axios from 'axios';
+import axios from "@/api/axios";
 import NavbarDefault from "../../components/NavbarDefault.vue";
 
 // image
@@ -35,7 +35,7 @@ const paymentProof = ref('');
 // 获取数据集信息
 const fetchDataset = async () => {
   try {
-    const response = await axios.get(`/api/getdataset/${route.params.id}`);
+    const response = await axios.get(`/getdataset/${route.params.id}`);
     dataset.value = response.data;
   } catch (error) {
     console.error("Error fetching dataset:", error);
@@ -55,7 +55,7 @@ const generatePaymentProof = () => {
 // 购买数据集
 const purchaseDataset = async () => {
   try {
-    await axios.post('/api/purchase', {
+    await axios.post('/purchase', {
       datasetId: route.params.id,
       paymentProof: paymentProof.value
     });
@@ -69,7 +69,7 @@ const purchaseDataset = async () => {
 // 下载数据集
 const downloadDataset = async () => {
   try {
-    const response = await axios.get(`/api/download/${dataset.value.IpfsAddress}`, {
+    const response = await axios.get(`/download/${dataset.value.IpfsAddress}`, {
       responseType: 'blob'
     });
     const url = window.URL.createObjectURL(new Blob([response.data]));

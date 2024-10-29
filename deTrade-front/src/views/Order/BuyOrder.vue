@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useRoute } from 'vue-router';
-import axios from 'axios';
+import axios from "@/api/axios";
 import NavbarDefault from "../../components/NavbarDefault.vue";
 import CryptoJS from 'crypto-js';
 
@@ -31,7 +31,7 @@ const secretKey = ref('');
 // 获取订单信息
 const fetchOrder = async () => {
   try {
-    const response = await axios.get(`/api/getorder/${route.params.id}`);
+    const response = await axios.get(`/getorder/${route.params.id}`);
     order.value = response.data;
   } catch (error) {
     console.error("Error fetching order:", error);
@@ -42,7 +42,7 @@ const fetchOrder = async () => {
 const submitSecretKey = async () => {
   try {
     // 调用后端接口，传递加密密钥口令
-    const response = await axios.post('/api/submit-encryption-key', {
+    const response = await axios.post('/submit-encryption-key', {
       encryptionKey: encryptionKey.value
     });
     // 将返回的支付密钥填入输入框
@@ -58,7 +58,7 @@ const submitSecretKey = async () => {
 const getEncryptionKey = async () => {
   try {
     // 调用后端接口，结束交易
-    await axios.post('/api/end-order', {
+    await axios.post('/end-order', {
       paymentKey: paymentKey.value
     });
     alert("订单已结束！");

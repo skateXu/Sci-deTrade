@@ -1,19 +1,28 @@
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+
 const grpc = require('@grpc/grpc-js');
 const { connect, signers } = require('@hyperledger/fabric-gateway');
 const crypto = require('node:crypto');
 const fs = require('node:fs/promises');
-// const path = require('node:path');
-const { TextDecoder } = require('node:util');
-const config = require('./config.js');
 const path = require('node:path');
+const { TextDecoder } = require('node:util');
+const config = require('./chain_config.js');
+const serverConfig = require('./server_config.js'); 
 
+
+const app = express();
 const utf8Decoder = new TextDecoder();
 const assetId = `asset${String(Date.now())}`;
 
-async function main() {
-    displayInputParameters();
+app.use(cors(serverConfig.corsOptions));
+app.use(bodyParser.json());
 
-    // The gRPC client connection should be shared by all Gateway connections to this endpoint.
+
+let contract;
+
+async function initializeContract() {
     const client = await newGrpcConnection();
 
     const gateway = connect({
@@ -35,23 +44,86 @@ async function main() {
         },
     });
 
-    try {
-        // Get a network instance representing the channel where the smart contract is deployed.
-        const network = gateway.getNetwork(config.channelName);
-
-        // Get the smart contract from the network.
-        const contract = network.getContract(config.chaincodeName);
-
-    } finally {
-        gateway.close();
-        client.close();
-    }
+    const network = gateway.getNetwork(config.channelName);
+    contract = network.getContract(config.chaincodeName);
+    await initLedger(contract);
 }
 
-main().catch((error) => {
-    console.error('******** FAILED to run the application:', error);
-    process.exitCode = 1;
+initializeContract().catch((error) => {
+    console.error('Failed to initialize contract:', error);
+    process.exit(1);
 });
+
+//获取用户
+app.get('/getUser', async (req, res) => {
+    try {
+        const uID = req.query.uID; // 确保从请求体中获取 uID
+    //   const resultBytes = await contract.evaluateTransaction('GetUser', uID);
+    //   const resultJson = new TextDecoder().decode(resultBytes);
+    //   const result = JSON.parse(resultJson);
+        const result = await getUser(contract, uID);
+        res.json({ success: true, result});
+    } catch (error) {
+        console.error('GetUser 失败', error); 
+  
+      // 尝试创建用户
+      try {
+        const uID = req.query.uID;
+        // const createResultBytes = await contract.submitTransaction('CreateUser', uID, '0');
+        // const createResultJson = new TextDecoder().decode(createResultBytes);
+        // const createResult = JSON.parse(createResultJson);
+        const createResult = await createUser(contract, uID);
+        res.json({ success: true, result: createResult });
+      } catch (createError) {
+        console.error('CreateUser 失败', createError);
+        res.status(500).json({ success: false, error: createError.message });
+      }
+    }
+  });
+  
+
+// 创建用户
+app.post('/createUser', async (req, res) => {
+    try {
+      const uID = req.query.uID; 
+    //   const resultBytes = await contract.submitTransaction('CreateUser', newUser, '0');
+    //   const resultJson = new TextDecoder().decode(resultBytes);
+    //   const result = JSON.parse(resultJson);
+      const result = await createUser(contract, uID);
+      res.json({ success: true, result });
+    } catch (error) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  // 铸币
+app.post('/mint', async (req, res) => {
+    try {
+        const {uID, value} = req.body;
+        await mint(contract, uID, value.toString());
+        res.json({ success: true, result: "" });
+    } catch (error) {
+        console.error('Mint 失败', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+  // 销毁
+app.post('/burn', async (req, res) => {
+    try {
+        const {uID, value} = req.body;
+        await burn(contract, uID, value.toString());
+        res.json({ success: true, result: "" });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.listen(serverConfig.port, () => {
+    console.log(`Server is running on port ${serverConfig.port}`);
+  });
+
+
 
 async function newGrpcConnection() {
     const tlsRootCert = await fs.readFile(config.tlsCertPath);
@@ -120,20 +192,10 @@ async function getUser(contract, ID){
     const resultJson = utf8Decoder.decode(resultBytes);
     const result = JSON.parse(resultJson);
     console.log('*** Result:', result);
+    return result;
 }
 
-/*
-func mint(contract *client.Contract, ID string) {
-	fmt.Println("\n--> Submit Transaction: Mint")
 
-	_, err := contract.SubmitTransaction("Mint", ID, "100")
-	if err != nil {
-		panic(fmt.Errorf("failed to evaluate transaction: %w", err))
-	}
-
-	fmt.Printf("*** Transaction committed successfully\n")
-}
-*/
 async function mint(contract, ID, value){
     console.log(
         '\n--> Submit Transaction: Mint, function mints new asset on the ledger'

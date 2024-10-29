@@ -146,6 +146,7 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 	if err != nil {
 		return fmt.Errorf("failed to put to world state. %v", err)
 	}
+	// contract account
 	user := User{
 		BuyOrderIDs:  []string{},
 		DatasetIDs:   []string{},

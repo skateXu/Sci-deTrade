@@ -4,11 +4,15 @@ const crypto = require('node:crypto');
 const fs = require('node:fs/promises');
 // const path = require('node:path');
 const { TextDecoder } = require('node:util');
-const config = require('./config.js');
+const config = require('./chain_config.js');
 const path = require('node:path');
 
 const utf8Decoder = new TextDecoder();
 const assetId = `asset${String(Date.now())}`;
+
+
+
+
 
 async function main() {
     displayInputParameters();

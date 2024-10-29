@@ -88,7 +88,7 @@ import { useAuthStore } from '../../stores/auth';
 import { useRouter } from 'vue-router';
 import NavbarDefault from "../../components/NavbarDefault.vue";
 import Header from "../../examples/Header.vue";
-import axios from 'axios';
+import axios from "@/api/axios";
 
 //images
 import image from "@/assets/img/city-profile.jpg";
@@ -104,10 +104,11 @@ const withdrawAmount = ref(0);
 
 const fetchAccountInfo = async () => {
   try {
-    const response = await axios.get('/api/account-info', {
-      headers: { Authorization: `Bearer ${authStore.token}` },
+    const uID = publicKey.value;
+    const response = await axios.get('/getUser', {
+      params: { uID },
     });
-    accountInfo.value = response.data;
+    accountInfo.value.balance = response.data.result.Value;
   } catch (error) {
     console.error('获取账户信息失败', error);
   }
@@ -115,23 +116,31 @@ const fetchAccountInfo = async () => {
 
 const handleDeposit = async () => {
   try {
-    await axios.post('/api/deposit', { amount: depositAmount.value }, {
-      headers: { Authorization: `Bearer ${authStore.token}` },
-    });
+    const uID = publicKey.value; // 假设你要充值的用户 ID
+    const value = depositAmount.value; // 充值的金额
+    await axios.post('/mint', { uID, value });
+
     fetchAccountInfo(); // 充值成功后刷新账户信息
   } catch (error) {
     console.error('充值失败', error);
+    // 你可以在这里添加更多的错误处理逻辑
+    this.errorMessage = 'Failed to deposit';
   }
 };
 
+
 const handleWithdraw = async () => {
   try {
-    await axios.post('/api/withdraw', { amount: withdrawAmount.value }, {
-      headers: { Authorization: `Bearer ${authStore.token}` },
-    });
-    fetchAccountInfo(); // 提现成功后刷新账户信息
+    const uID = publicKey.value; // 假设你要充值的用户 ID
+    const value = withdrawAmount.value; // 充值的金额
+
+    await axios.post('/burn', { uID, value });
+
+    fetchAccountInfo(); // 充值成功后刷新账户信息
   } catch (error) {
-    console.error('提现失败', error);
+    console.error('提款失败', error);
+    // 你可以在这里添加更多的错误处理逻辑
+    this.errorMessage = 'Failed to deposit';
   }
 };
 
