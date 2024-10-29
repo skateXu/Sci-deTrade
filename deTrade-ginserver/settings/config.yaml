@@ -1,0 +1,4 @@
+app:
+  name: "deTradeServer"
+  mode: "dev"
+  port: 8080
