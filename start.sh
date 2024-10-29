@@ -17,9 +17,3 @@ EOF
 go build -o detrade
 # 启动后端，&后台运行
 ./detrade 
-
-cat <<EOF
-
-后端启动完成
-
-EOF
