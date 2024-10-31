@@ -1,5 +1,3 @@
-以下是您的智能合约API接口文档的Markdown版本，并已翻译为中文：
-
 # Chaincode API Documentation
 ## 智能合约API
 
