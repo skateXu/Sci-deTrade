@@ -182,8 +182,23 @@ app.get('/getBuyOrders', async (req, res) => {
         const orderIDs = result.BuyOrderIDs;
         const buyOrders = await Promise.all(orderIDs.map(id => getOrder(contract, id))); 
         res.json({ success: true, buyOrders});
-    }catch (error) {}
+    }catch (error) {
+        console.error('GetBuyOrders fail', error);
+    }
 })
+
+// 获取单个订单
+app.get('/getOrder', async (req, res) => {
+    try {
+        const id = req.query.id;
+        const order  = await  getOrder(contract, id);
+        res.json({ success: true, order});
+    } catch (error) {
+        console.error('getOrder fail', error); 
+        res.status(500).json({ success: false, error: error.message });
+    }
+})
+
 // 处理订单
 app.post('/handleOrder', async (req, res) => {
     try {
@@ -338,6 +353,7 @@ async function getOrder(contract, orderID){
     const resultJson = utf8Decoder.decode(resultBytes);
     const result = JSON.parse(resultJson);
     console.log('*** Result:', result);
+    return result;
 }
 
 async function getDatasetList(contract) {
@@ -362,6 +378,7 @@ async function getOrderList(contract) {
     const resultJson = utf8Decoder.decode(resultBytes);
     const result = JSON.parse(resultJson);
     console.log('*** Result:', result);
+    return  result;
 }
 
 async function handleOrder(contract, orderID, n, payword){

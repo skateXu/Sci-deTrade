@@ -32,20 +32,71 @@
   </Header>
   
     <div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n6">
-      <Dataset :data="buyOrder" />
+      <Order v-if="data" :data="data" />
     </div>
 
   </template>
   
   <script setup>
-  import { ref, computed } from 'vue';
+  import { ref, computed ,onMounted} from 'vue';
+  import { useAuthStore } from '../../stores/auth';
   import { useRouter } from 'vue-router';
   import NavbarDefault from "../../components/NavbarDefault.vue";
-  import Dataset from "./Sections/OrderDetail.vue";
-  import sellOrder from "./Sections/Data/sellOrder";
-  import buyOrder from "./Sections/Data/buyOrder";
+  import Order from "./Sections/OrderDetail.vue";
+  // import data from "./Sections/Data/buyOrder";
   import vueMkHeader from "@/assets/img/vue-mk-header.jpg";
+  import axios from '@/api/axios';
+  import imgStat from "@/assets/img/stat.png";
+
   const router = useRouter();
-  
+  const authStore = useAuthStore();
+
   // 模拟数据集
+  const data = ref(null)
+const fetchData = async () => {
+  data.value = [{
+    heading: "管理订单",
+    description:
+      "您的购买订单",
+      items: []
+  }];
+  try {
+    const uID = authStore.publicKey;
+    const response = await axios.get('/getBuyOrders', {
+      params: { uID },
+    });
+    const buyOrders = response.data.buyOrders;
+    console.log("test:",buyOrders);
+
+    var items = [{
+          id: "1",
+          image: imgStat,
+          title: "金融数据",
+          subtitle: "10GB",
+          route: "BuyOrder",
+          pro: false
+        }];
+
+    for (const buyOrder of buyOrders) {
+      var item = {
+          id: buyOrder.OrderID,
+          image: imgStat,
+          title: buyOrder.DatasetID,
+          subtitle: buyOrder.EndTime,
+          route: "BuyOrder",
+          pro: false
+        };
+        items.push(item);
+    }
+    data.value[0].items = items;
+  } catch (error) {
+    console.error('getBuyOrders fail', error);
+  }
+};
+
+  onMounted(() => {
+    fetchData();
+  });
+
+
   </script>

@@ -31,8 +31,8 @@ const paymentKey = ref('');
 // 获取订单信息
 const fetchOrder = async () => {
   try {
-    const response = await axios.get(`/getorder/${route.params.id}`);
-    order.value = response.data;
+    const response = await axios.get('/getorder',{params: { id: route.params.id },});
+    order.value = response.data.order;
   } catch (error) {
     console.error("Error fetching order:", error);
   }
@@ -42,7 +42,8 @@ const fetchOrder = async () => {
 const submitEncryptionKey = async () => {
   try {
     // 调用后端接口，传递加密密钥口令
-    const response = await axios.post('/submit-encryption-key', {
+    const response = await axios.post('/handleOrder', {
+
       encryptionKey: encryptionKey.value
     });
     // 将返回的支付密钥填入输入框
@@ -58,7 +59,8 @@ const submitEncryptionKey = async () => {
 const endOrder = async () => {
   try {
     // 调用后端接口，结束交易
-    await axios.post('/end-order', {
+    await axios.post('/handleOrder', {
+      id: route.params.id,
       paymentKey: paymentKey.value
     });
     alert("订单已结束！");
@@ -66,6 +68,13 @@ const endOrder = async () => {
     console.error("Error ending order:", error);
     alert("结束订单失败。");
   }
+};
+
+const truncateText = (text, length) => {
+  if (text.length > length) {
+    return text.substring(0, length) + "...";
+  }
+  return text;
 };
 
 onMounted(() => {
@@ -114,11 +123,11 @@ onMounted(() => {
                     >
                       <h3 class="text-white">订单信息</h3>
                       <p class="text-white opacity-8 mb-4">
-                        <span class="text-sm opacity-8">买家: {{ order.Buyer }}</span><br>
+                        <span class="text-sm opacity-8">买家: {{ truncateText(order.Buyer, 20) }}</span><br>
                         <span class="text-sm opacity-8">数据集ID: {{ order.DatasetID }}</span><br>
                         <span class="text-sm opacity-8">订单ID: {{ order.OrderID }}</span><br>
                         <span class="text-sm opacity-8">结束时间: {{ order.EndTime }}</span><br>
-                        <span class="text-sm opacity-8">支付哈希: {{ order.PayHash }}</span>
+                        <span class="text-sm opacity-8">支付哈希: {{ truncateText(order.PayHash, 20) }}</span>
                       </p>
                     </div>
                   </div>
@@ -184,3 +193,5 @@ onMounted(() => {
     </section>
   </div>
 </template>
+
+

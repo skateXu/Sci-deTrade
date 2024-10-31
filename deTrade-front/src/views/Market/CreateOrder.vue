@@ -21,7 +21,7 @@ const route = useRoute();
 const dataset = ref({
   Title: '',
   Description: '',
-  Id: '',
+  DatasetID: '',
   Hash: '',
   IpfsAddress: '',
   N_subset: '',
@@ -36,7 +36,10 @@ const paymentProof = ref('');
 const fetchDataset = async () => {
   try {
     const response = await axios.get('/getdataset',{ params: { id: route.params.id } });
-    dataset.value = response.data;
+    dataset.value = response.data.dataset;
+    dataset.value.Owner = dataset.value.Owner[0,8];
+    // dataset.value.Id = route.params.id;
+    console.log("dataset", dataset.value);
   } catch (error) {
     console.error("Error fetching dataset:", error);
   }
@@ -55,11 +58,14 @@ const generatePaymentProof = () => {
 // 购买数据集
 const purchaseDataset = async () => {
   try {
-    await axios.post('/purchase', {
-      datasetId: route.params.id,
-      paymentProof: paymentProof.value
+    const {buyer, datasetID, payHash} = {
+      buyer: store.publicKey,
+      datasetID: dataset.value.DatasetID,
+      payHash: paymentProof.value
+    };
+    await axios.post('/createOrder', { buyer, datasetID, payHash
     });
-    alert("Dataset purchased successfully!");
+    alert("Order created successfully!");
   } catch (error) {
     console.error("Error purchasing dataset:", error);
     alert("Failed to purchase dataset.");
@@ -83,6 +89,13 @@ const downloadDataset = async () => {
     console.error("Error downloading dataset:", error);
     alert("Failed to download dataset.");
   }
+};
+
+const truncateText = (text, length) => {
+  if (text.length > length) {
+    return text.substring(0, length) + "...";
+  }
+  return text;
 };
 
 onMounted(() => {
@@ -134,17 +147,17 @@ onMounted(() => {
                       </p>
                       <div class="d-flex p-2 text-white">
                         <div class="ps-3">
-                          <span class="text-sm opacity-8">ID: {{ dataset.Id }}</span>
+                          <span class="text-sm opacity-8">DatasetID: {{ dataset.DatasetID }}</span>
                         </div>
                       </div>
                       <div class="d-flex p-2 text-white">
                         <div class="ps-3">
-                          <span class="text-sm opacity-8">Hash: {{ dataset.Hash }}</span>
+                          <span class="text-sm opacity-8">Hash: {{ truncateText(dataset.Hash,20) }}</span>
                         </div>
                       </div>
                       <div class="d-flex p-2 text-white">
                         <div class="ps-3">
-                          <span class="text-sm opacity-8">IpfsAddress: {{ dataset.IpfsAddress }}</span>
+                          <span class="text-sm opacity-8">IpfsAddress: {{ truncateText(dataset.IpfsAddress, 20) }}</span>
                         </div>
                       </div>
                       <div class="d-flex p-2 text-white">
@@ -154,7 +167,7 @@ onMounted(() => {
                       </div>
                       <div class="d-flex p-2 text-white">
                         <div class="ps-3">
-                          <span class="text-sm opacity-8">Owner: {{ dataset.Owner }}</span>
+                          <span class="text-sm opacity-8">Owner: {{ truncateText(dataset.Owner, 20)}}</span>
                         </div>
                       </div>
                       <div class="d-flex p-2 text-white">
@@ -164,7 +177,7 @@ onMounted(() => {
                       </div>
                       <div class="d-flex p-2 text-white">
                         <div class="ps-3">
-                          <span class="text-sm opacity-8">Tags: {{ dataset.Tags }}</span>
+                          <span class="text-sm opacity-8">Tags: {{ truncateText(dataset.Tags, 20) }}</span>
                         </div>
                       </div>
                     </div>
