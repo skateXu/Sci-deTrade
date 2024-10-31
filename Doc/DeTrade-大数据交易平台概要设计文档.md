@@ -1,5 +1,9 @@
 # DeTrade-大数据交易平台概要设计文档
 
+## 摘要
+
+针对目前中心化数据交易平台面临的数据检索不全、交易流程不规范、个人隐私信息易泄露等问题，本项目创新性地引入了**区块链和智能合约**技术，通过区块链的公开透明、不可篡改特性，以及智能合约的逻辑透明、自动执行特点，实现了数据交易流程的可验证、可追溯、可仲裁。同时，针对数据交易平台存在的**数据质量评估困难、检索记录暴露个人偏好、区块链吞吐量限制交易效率**三大问题，分别设计了**渐进式交易数据质量评估方案、合约检索与本地检索方案、主侧链并行的网络架构方案**。基于以上问题解决方案，实现了数据安全交易和可信仲裁，提供了面向**隐私保护**和**数据质量评估**的区块链大数据交易示范平台
+
 ## 第一章 平台概述
 
 ### 1.1 背景介绍
@@ -16,11 +20,11 @@
 
 > [1].《中国数字经济发展研究报告》http://www.caict.ac.cn/kxyj/qwfb/bps/202408/P020240830315324580655.pdf
 > [2].中共中央 国务院. 关于构建数据基础制度更
-好发挥数据要素作用的意见[Z]. 2022.
-The CPC Central Committee and the State
-Council. Opinions on the construction of
-data fundamental institutions for better
-promoting the data factor value[Z]. 2022.
+> 好发挥数据要素作用的意见[Z]. 2022.
+> The CPC Central Committee and the State
+> Council. Opinions on the construction of
+> data fundamental institutions for better
+> promoting the data factor value[Z]. 2022.
 >
 > [3]. https://www.chinanews.com.cn/cj/2023/11-26/10118324.shtml
 >
@@ -31,9 +35,9 @@ promoting the data factor value[Z]. 2022.
 #### 1.1.2 中心化数据交易平台
 
 传统的中心化数据交易平台依赖于可信第三方进行数据的上传、存储、交易等行为。数据售卖方和购买方需要分别通过平台进行数据的上传和下载，并且支付给平台额外的手续费用。
-<p align="center">
+
 <img src="assets/center-trade.png" alt="sys" style="zoom:50%;" />
-</p>
+
 
 这种中心化架构除了会面临可能的单点故障问题外，还存在着许多其他问题：
 
@@ -46,15 +50,19 @@ promoting the data factor value[Z]. 2022.
 #### 1.1.3 去中心化数据交易平台
 
 面对以上痛点，本平台考虑引入区块链，利用区块链去中心化、不可篡改等特性，并结合智能合约的逻辑透明、自动执行特点，构建去中心化的数据交易平台。
+
 <p align="center">
 <img src="assets/de-trade.png" alt="sys" style="zoom:50%;" />
 </p>
 
-**数据检索信息的公开不可篡改**：基于区块链的数据交易平台会将数据检索信息透明公开的保存在区块链上，所有人都可以自主查询相应的检索信息，从而保证检索结果的可信和不可篡改。数据购买方也可以直接通过检索信息和数据售卖方取得联系并进行数据交易，不需要第三方的中介信息或者额外的手续费用。
 
-**交易流程关键步骤上链，实现可追溯、可仲裁**：借助区块链规范数据交易流程，通过将关键步骤上链的方式，对数据交易过程进行存证，每一笔数据交易都可以在区块链上进行追溯，并通过区块链提供的存证信息进行仲裁。进一步设计数据质量评估方案，从而实现数据交易全流程的可信、透明、公正。
+具体而言，结合区块链构建去中心化数据交易平台可以分别解决之前提到的问题：
 
-**基于自我主权的去中心化身份DID实现匿名和不可链接**：自我主权的去中心化身份DID可以使用户掌握自己的身份信息，在去中心化交易平台上使用DID可以实现匿名性，进一步设计DID生成方案从而实现不可链接特性。
+**数据检索信息的公开不可篡改**：基于区块链的数据交易平台会将数据检索信息透明公开的保存在区块链上，所有人都可以自主查询相应的数据信息，从而保证检索结果的可信和不可篡改。数据购买方也可以直接通过检索信息中的相关信息和数据售卖方取得联系并进行数据交易，不需要第三方的中介行为或者额外的手续费用。
+
+**交易流程关键步骤上链，实现可追溯、可仲裁**：借助区块链规范数据交易流程，通过将关键步骤上链的方式，对数据交易过程进行存证，每一笔数据交易都可以在区块链上进行追溯，并通过区块链提供的存证信息进行仲裁。此外，本项目针对数据商品难以在获知数据之前进行质量评估，进而导致用户纠纷的问题，设计了包含数据质量评估的渐进式交易过程，通过逐子集的数据交易过程，以及合理的数据链上仲裁机制，实现了数据交易全流程的可信、透明、公正。
+
+**基于自我主权的去中心化身份DID实现匿名和不可链接**：自我主权的去中心化身份DID可以使用户掌握自己的身份信息，在去中心化交易平台上使用DID实现匿名性，进一步设计DID生成方案从而实现不可链接特性。
 
 
 
@@ -75,9 +83,11 @@ promoting the data factor value[Z]. 2022.
 #### 1.2.2 DID技术概述
 
 去中心化身份DID架构是W3C于2019年8月首次提出的一种分布式数字身份管理架构。在该架构中，身份是完全去中心化的，DID可以用来表示人、组织、数据模型等实体的身份信息。
+
 <p align="center">
 <img src="assets/DIDsys.png" alt="sys" style="zoom:45%;" />
 </p>
+
 
 如图所示，参与DID技术的实体主要包括DID持有人（DID subject）、DID控制者（DID controller）和可验证的数据注册中心（Verifiable Data Registry）。其中，DID持有者是指拥有DID身份的实体，DID控制者是拥有DID标识符控制权的实体，而可验证的注册中心指的是提供DID标识符的生成、注册和颁发等服务的组织机构，负责管理和验证DID标识符的唯一和真实性。
 
@@ -90,6 +100,7 @@ DID架构在实际应用中，通常会与VC技术结合使用。VC技术是一�
 <p align="center">
 <img src="assets/VC.png" alt="sys" style="zoom:50%;" />
 </p>
+
 
 如图所示，在VC技术中，通常涉及三类不同的实体，分别是发行者（Issuer）、使用者（Holder）和验证者（Verifier）。其中发行者是指颁发VC的实体，类似于传统PKI体系中的CA，例如企业、政府等。使用者是使用VC的实体，而验证者是验证VC的真实性和有效性的实体，通常是需要对VC进行验证的第三方服务提供商等。
 
@@ -107,30 +118,36 @@ DID架构的最大优势是将身份信息和属性信息进行分离，从而�
 
 #### 1.3.1 大规模交易下的性能提升
 
-在当前大规模数据交易的需求场景下，传统区块链由于其吞吐量受限的特点，在数据交易过程中的性能可能会受到限制，基于此，平台的设计目标之一是研究在大规模交易下的区块链性能提升，具体而言，我们通过设计了主侧链并行的网络架构，大幅提高了网络的吞吐量。
+在当前大规模数据交易的需求场景下，传统区块链由于其吞吐量受限的特点，在数据交易过程中的性能可能会受到限制。基于此，平台的设计目标之一是研究在大规模交易下的区块链性能提升，具体而言，本项目通过设计主侧链并行的网络架构，利用kubernetes工具进行集群搭建，大幅提高了网络的吞吐量。
 
 #### 1.3.2 隐私保护下的数据质量评估
 
-针对数据商品难以进行质量评估即售后退款的问题，本平台设计了规范合理的渐进式数据交易流程。
+针对数据交易过程中，数据商品难以进行质量评估以及售后退款，从而可能出现的纠纷问题，本项目设计了隐私保护下的数据质量评估方案，尽量降低数据交易过程中出现纠纷的可能性。
 
 #### 1.3.3 大数据安全交易和可信仲裁
 
-结合区块链存证进行可信仲裁。结合DID实现匿名安全交易。
+结合区块链存证以及渐进式数据交易方案进行可信仲裁，结合DID实现匿名安全交易。
 
+#### 1.3.4 落地用户友好交易平台
+
+本项目借助底层区块链技术和数据交易方案提供了面向**隐私保护**和**数据质量评估**的区块链大数据交易平台。
 
 
 ### 1.4 应用前景
 
-据2022年的相关数据指出，金融行业是目前最大的细分业数据交易市场，占比达35%；其次是互联网行业，占比约为24%。目前，我国各地正加强“数据驱动力”，繁荣数据生态。
+据2023年的相关报告[3]指出，金融行业是目前最大的细分业数据交易市场，占比达35%；其次是互联网行业，占比约为24%。目前，我国各地正加强“数据驱动力”，繁荣数据生态。数据交易市场规模稳步扩大，数据交易需求也在日渐增加。
+
 
 
 
 ## 第二章 技术原理与设计
 
 ### 2.1 系统架构设计
+
 <p align="center">
 <img src="assets/sys.png" alt="sys" style="zoom:80%;" />
 </p>
+
 
 ### 2.2 信息检索模块
 
@@ -174,18 +191,21 @@ DID架构的最大优势是将身份信息和属性信息进行分离，从而�
 
 5. 验证与仲裁
 
-   $Verify(pk_{requester},\sigma _{s_i},H(k^1_{S_i})) == 1$
-
-   $t= H(k^1_{S_i}))\oplus H(k^2_{S_i}))$
+   - 首先验证数据请求者的签名是否正确
+     $Verify(pk_{requester},\sigma _{s_i},H(k^1_{S_i})) == 1$
+   - 计算tag，并与链上保存的tag进行对比，后续需要更新tag
+     $t= H(k^1_{S_i}))\oplus H(k^2_{S_i}))$
 
 
 
 ### 2.5 主侧链并行架构
 
 网络架构设计如下：
+
 <p align="center">
 <img src="assets/network.png" alt="sys" style="zoom:80%;" />
 </p>
+
 
 ## 第三章 系统搭建与实现
 
@@ -193,18 +213,205 @@ DID架构的最大优势是将身份信息和属性信息进行分离，从而�
 
 本部分将简要介绍智能合约实现模块以及接口：
 
-#### 数据结构
+#### 3.1.1 数据结构
+
+Dataset 数据集信息结构
+
+```go
+type Dataset struct {
+    DatasetID   string   `json:"DatasetID"`   // 数据集唯一标识
+    Title       string   `json:"Title"`       // 数据集标题
+    Describtion string   `json:"Description"` // 数据集描述
+    Hash        string   `json:"Hash"`        // 数据集哈希值
+    IpfsAddress string   `json:"IpfsAddress"` // IPFS存储地址
+    N_subset    int      `json:"N_subset"`    // 子集数量
+    Owner       string   `json:"Owner"`       // 所有者ID
+    Price       int      `json:"Price"`       // 价格
+    Tags        []string `json:"Tags"`        // 标签列表
+}
+
+```
+
+Order 订单信息结构
+
+```go
+type Order struct {
+    OrderID   string    `json:"OrderID"`   // 订单唯一标识
+    Buyer     string    `json:"Buyer"`     // 买方ID
+    DatasetID string    `json:"DatasetID"` // 数据集ID
+    PayHash   string    `json:"PayHash"`   // 支付哈希
+    EndTime   time.Time `json:"EndTime"`   // 订单截止时间
+}
+```
+
+User 用户信息结构
+
+```go
+type User struct {
+    UID          string   `json:"UID"`          // 用户唯一标识
+    Value        int      `json:"Value"`        // 账户余额
+    Nonce        int      `json:"Nonce"`        // 交易计数器
+    DatasetIDs   []string `json:"DatasetIDs"`   // 拥有的数据集ID列表
+    BuyOrderIDs  []string `json:"BuyOrderIDs"`  // 购买订单ID列表
+    SellOrderIDs []string `json:"SellOrderIDs"` // 销售订单ID列表
+}
+```
+
+DatasetList 数据集列表结构
+
+```go
+type DatasetList struct {
+    DLID       string   `json:"DLID"`       // 列表唯一标识
+    DatasetIDs []string `json:"DatasetIDs"` // 数据集ID列表
+    Next       int      `json:"Next"`       // 下一个数据集索引
+}
+```
+
+OrderList 订单列表结构
+
+```go
+type OrderList struct {
+    OLID     string   `json:"OLID"`     // 列表唯一标识
+    OrderIDs []string `json:"OrderIDs"` // 订单ID列表
+    Next     int      `json:"Next"`     // 下一个订单索引
+}
+```
+
+UserList 用户列表结构
+
+```go
+type UserList struct {
+    ULID    string   `json:"ULID"`    // 列表唯一标识
+    UserIDs []string `json:"UserIDs"` // 用户ID列表
+}
+```
+
+#### 3.1.2 函数
+
+**初始化系统**
+
+| 参数                        | 含义                     |
+| --------------------------- | ------------------------ |
+| TransactionContextInterface | fabric提供的智能合约接口 |
+
+```go
+InitLedger(ctx contractapi.TransactionContextInterface) error
+```
+
+说明：初始化contract账户用于锁定资金
+
+**数据集管理接口**
+
+| 参数        | 含义                         |
+| ----------- | ---------------------------- |
+| title       | 数据集标题                   |
+| description | 数据集描述                   |
+| hash        | 数据集哈希，用于验证完整性   |
+| ipfsAddress | 数据集IPFS地址               |
+| n_subset    | 数据集切分子集数目           |
+| owner       | 数据集拥有者                 |
+| price       | 数据集定价                   |
+| tags[]      | 数据集加密密钥计算的tags集合 |
+
+- 创建数据集
+
+  ```go
+  CreateDataset(ctx contractapi.TransactionContextInterface, title string, description string, hash string, ipfsAddress string, n_subset int, owner string, price int, tags []string) error
+  ```
+
+- 获取链上数据集信息
+
+  ```go
+  GetDataset(ctx contractapi.TransactionContextInterface, datasetID string) (*Dataset, error)
+  ```
+
+- 获取数据集列表
+
+  ```go
+  GetDatasetList(ctx contractapi.TransactionContextInterface) (*DatasetList, error)
+  ```
+
+**订单处理接口**
+
+| 参数      | 含义         |
+| --------- | ------------ |
+| buyer     | 数据购买者ID |
+| orderID   | 交易ID       |
+| datasetID | 交易数据集ID |
+| payHash   | 支付凭证     |
+
+- 创建订单
+
+  - 
+
+  ```go
+  CreateOrder(ctx contractapi.TransactionContextInterface, buyer string, datasetID string, payHash string) error
+  ```
+
+- 获取订单信息
+
+  ```go
+  GetOrder(ctx contractapi.TransactionContextInterface, orderID string) (*Order, error) 
+  ```
+
+- 获取订单列表
+
+  ```go
+  GetOrderList(ctx contractapi.TransactionContextInterface) (*OrderList, error)
+  ```
+
+- 交付订单
+
+  ```go
+  HandleOrder(ctx contractapi.TransactionContextInterface, orderID string, n int, payword string) error
+  ```
+
+  说明：
+
+- 在创建订单时，数据购买者会确定子集的交付序列，锁定资金在contract账户中，分别更新数据购买者、售卖者的购买数据集列表、售卖数据集列表。然后上传payHash用于后续的payword验证。
+
+- 在交付订单时，合约会首先检查订单是否过期，然后验证payword，计算应支付的资金n*dataset.Price/dataset.N_subset。分别修改seller、buyer和contract的账户余额。
 
 
-<p align="center">
-<img src="assets/contract-data.png" alt="sys" style="zoom:50%;" />
-</p>
+**用户管理接口**
+
+- 创建用户
+
+  ```go
+  CreateUser(ctx contractapi.TransactionContextInterface, uID string, value int) error
+  ```
+
+- 获取链上用户信息
+
+  ```go
+  GetUser(ctx contractapi.TransactionContextInterface, uID string) (*User, error)
+  ```
+
+**代币系统接口**
+
+| 参数  | 含义       |
+| ----- | ---------- |
+| uID   | 用户UID    |
+| value | 余额变化值 |
+
+- 充值：银行等对用户账户余额进行修改，增加余额
+
+  ```go
+  Mint(ctx contractapi.TransactionContextInterface, uID string, value int) error
+  ```
+
+- 提款：银行等对用户账户余额进行修改，减少余额
+
+  ```go
+  Burn(ctx contractapi.TransactionContextInterface, uID string, value int) error
+  ```
+
 
 
 
 ### 3.2 Fabric区块链
 
-本平台基于Fabric区块链进行搭建。
+本平台基于Hyperledger Fabric区块链进行搭建。
 
 ### 3.3 服务器端设计
 
@@ -222,36 +429,51 @@ DID架构的最大优势是将身份信息和属性信息进行分离，从而�
 <p align="center">
 <img src="assets/display-Home.png" alt="sys" style="zoom:80%;" />
 </p>
+
 用户登录：
+
 <p align="center">
 <img src="assets/display-register.png" alt="sys" style="zoom:80%;" />
 </p>
 
+
 数据集查询：
+
 <p align="center">
 <img src="assets/display-query.png" alt="sys" style="zoom:80%;" />
 </p>
+
 上传数据：
+
 <p align="center">
 <img src="assets/display-upload.png" alt="sys" style="zoom:80%;" />
 </p>
 
+
 cash 系统：
+
 <p align="center">
 <img src="assets/display-cash.png" alt="sys" style="zoom:80%;" />
 </p>
+
 订单管理：
+
 <p align="center">
 <img src="assets/display-order.png" alt="sys" style="zoom:80%;" />
 </p>
+
 密钥交付：
+
 <p align="center">
 <img src="assets/display-key.png" alt="sys" style="zoom:80%;" />
 </p>
+
 资金结算：
+
 <p align="center">
 <img src="assets/display-pay.png" alt="sys" style="zoom:80%;" />
 </p>
+
 
 #### 4.1.2 数据检索
 
