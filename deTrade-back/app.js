@@ -57,25 +57,19 @@ initializeContract().catch((error) => {
 //获取用户
 app.get('/getUser', async (req, res) => {
     try {
-        const uID = req.query.uID; // 确保从请求体中获取 uID
-    //   const resultBytes = await contract.evaluateTransaction('GetUser', uID);
-    //   const resultJson = new TextDecoder().decode(resultBytes);
-    //   const result = JSON.parse(resultJson);
+        const uID = req.query.uID; 
         const result = await getUser(contract, uID);
         res.json({ success: true, result});
     } catch (error) {
-        console.error('GetUser 失败', error); 
+        console.error('GetUser fail', error); 
   
       // 尝试创建用户
       try {
         const uID = req.query.uID;
-        // const createResultBytes = await contract.submitTransaction('CreateUser', uID, '0');
-        // const createResultJson = new TextDecoder().decode(createResultBytes);
-        // const createResult = JSON.parse(createResultJson);
         const createResult = await createUser(contract, uID);
         res.json({ success: true, result: createResult });
       } catch (createError) {
-        console.error('CreateUser 失败', createError);
+        console.error('CreateUser fail', createError);
         res.status(500).json({ success: false, error: createError.message });
       }
     }
@@ -86,9 +80,6 @@ app.get('/getUser', async (req, res) => {
 app.post('/createUser', async (req, res) => {
     try {
       const uID = req.query.uID; 
-    //   const resultBytes = await contract.submitTransaction('CreateUser', newUser, '0');
-    //   const resultJson = new TextDecoder().decode(resultBytes);
-    //   const result = JSON.parse(resultJson);
       const result = await createUser(contract, uID);
       res.json({ success: true, result });
     } catch (error) {
@@ -103,7 +94,7 @@ app.post('/mint', async (req, res) => {
         await mint(contract, uID, value.toString());
         res.json({ success: true, result: "" });
     } catch (error) {
-        console.error('Mint 失败', error);
+        console.error('Mint fail', error);
         res.status(500).json({ success: false, error: error.message });
     }
 });
@@ -115,9 +106,96 @@ app.post('/burn', async (req, res) => {
         await burn(contract, uID, value.toString());
         res.json({ success: true, result: "" });
     } catch (error) {
+        console.error('Burn fail', error);
         res.status(500).json({ success: false, error: error.message });
     }
 });
+
+// 获取所有数据集信息
+app.get('/getDatasets', async (req, res) => {
+    try {
+        const datasetList  = await getDatasetList(contract);
+        const datasetIds = datasetList.DatasetIDs;
+        const datasets = await Promise.all(datasetIds.map(id => getDataset(contract, id)));     
+        res.json({ success: true, datasets});
+    } catch (error) {
+        console.error('getDatasets fail', error); 
+        res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  // 获取单个数据集信息
+app.get('/getDataset', async (req, res) => {
+    try {
+        const id = req.query.id;
+        const dataset  = await  getDataset(contract, id);
+        res.json({ success: true, dataset});
+    } catch (error) {
+        console.error('getDataset fail', error); 
+        res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+// 创建数据集
+app.post('/createDataset', async (req, res) => {
+    try {
+        const {Title, Description, Hash, IpfsAddress, N_subset, Owner, Price, Tags} = req.body;
+        console.log(Title, Description, Hash, IpfsAddress, N_subset, Owner, Price, Tags);
+        await createDataset(contract, Title, Description, Hash, IpfsAddress, N_subset, Owner, Price, Tags);
+        res.json({ success: true, result:"" });
+    } catch (error) {
+        console.error('CreateDataset fail', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// 创建订单
+app.post('/createOrder', async (req, res) => {
+    try {
+        const {buyer, datasetID, payHash} = req.body;
+        await createOrder(contract, buyer, datasetID, payHash);
+        res.json({ success: true, result:"" });
+    } catch (error) {
+        console.error('CreateOrder fail', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+})
+
+// 获取出售订单
+app.get('/getSellOrders', async (req, res) => {
+    try {
+        const uID = req.query.uID; 
+        const result = await getUser(contract, uID);
+        const orderIDs = result.SellOrderIDs;
+        const sellOrders = await Promise.all(orderIDs.map(id => getOrder(contract, id))); 
+        res.json({ success: true, sellOrders});
+    } catch (error) {
+        console.error('GetSellOrders fail', error); 
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+// 获取购买订单
+app.get('/getBuyOrders', async (req, res) => {
+    try {
+        const uID = req.query.uID; 
+        const result = await getUser(contract, uID);
+        const orderIDs = result.BuyOrderIDs;
+        const buyOrders = await Promise.all(orderIDs.map(id => getOrder(contract, id))); 
+        res.json({ success: true, buyOrders});
+    }catch (error) {}
+})
+// 处理订单
+app.post('/handleOrder', async (req, res) => {
+    try {
+        const {orderID, n, payword} = req.body;
+        await handleOrder(contract, orderID, n, payword);
+        res.json({ success: true, result:"" });
+    } catch (error) {
+        console.error('HandleOrder fail', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+})
+
 
 app.listen(serverConfig.port, () => {
     console.log(`Server is running on port ${serverConfig.port}`);
@@ -247,6 +325,7 @@ async function getDataset(contract, datasetID){
     const resultJson = utf8Decoder.decode(resultBytes);
     const result = JSON.parse(resultJson);
     console.log('*** Result:', result);
+    return result;
 }
 
 async function getOrder(contract, orderID){
@@ -271,6 +350,7 @@ async function getDatasetList(contract) {
 	const resultJson = utf8Decoder.decode(resultBytes);
 	const result = JSON.parse(resultJson);
 	console.log('*** Result:', result);
+    return result;
 }
 async function getOrderList(contract) {
     console.log(

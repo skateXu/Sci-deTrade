@@ -21,7 +21,6 @@ const route = useRoute();
 const dataset = ref({
   Title: '',
   Description: '',
-  Id: '',
   Hash: '',
   IpfsAddress: '',
   N_subset: '',
@@ -50,7 +49,7 @@ const uploadDataset = async () => {
       }
     });
     dataset.value.IpfsAddress = response.data.ipfsAddress;
-    alert("文件上传成功，IPFS地址已更新！");
+    alert("文件上传成功,IPFS地址已更新");
   } catch (error) {
     console.error("Error uploading dataset:", error);
     alert("文件上传失败。");
@@ -59,12 +58,20 @@ const uploadDataset = async () => {
 
 // 上架数据集
 const listDataset = async () => {
-  dataset.value.Tags = tagsInput.value.split(',').map(tag => tag.trim());
-
+  dataset.value.Tags = JSON.stringify(tagsInput.value.split(','));
+  dataset.value.Owner = store.publicKey;
   try {
-    await axios.post('/list-dataset', {
-      ...dataset.value,
-      Owner: store.user.id
+    const { Title, Description, Hash, IpfsAddress, N_subset, Owner, Price, Tags } = dataset.value;
+    console.log(Title);        // 'New Title'
+    console.log(Description);  // 'New Description'
+    console.log(Hash);         // 'New Hash'
+    console.log(IpfsAddress);  // 'New IpfsAddress'
+    console.log(N_subset);     // 'New N_subset'
+    console.log(Owner);        // 'New Owner'
+    console.log(Price);        // 'New Price'
+    console.log(Tags);         // 'New Tags'
+    await axios.post('/createDataset', {
+      Title, Description, Hash, IpfsAddress, N_subset, Owner, Price, Tags
     });
     alert("数据集已成功上架！");
   } catch (error) {
@@ -172,7 +179,6 @@ onMounted(() => {
                                 class="form-control"
                                 placeholder="IPFS地址"
                                 v-model="dataset.IpfsAddress"
-                                readonly
                               />
                             </div>
                           </div>
@@ -180,7 +186,7 @@ onMounted(() => {
                             <div class="input-group input-group-static mb-4">
                               <label>N_subset</label>
                               <input
-                                type="number"
+                                type="text"
                                 class="form-control"
                                 placeholder="输入N_subset"
                                 v-model="dataset.N_subset"
@@ -191,7 +197,7 @@ onMounted(() => {
                             <div class="input-group input-group-static mb-4">
                               <label>价格</label>
                               <input
-                                type="number"
+                                type="text"
                                 class="form-control"
                                 placeholder="输入价格"
                                 v-model="dataset.Price"

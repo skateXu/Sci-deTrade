@@ -136,7 +136,7 @@ const generateKeys = () => {
   privateKey.value = keyPair.getPrivate('hex');
 };
 
-const handleLogin = () => {
+const handleLogin =  () => {
   authStore.login(publicKey.value, privateKey.value);
   router.push({ name: 'home' });
 };

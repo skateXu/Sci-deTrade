@@ -56,6 +56,7 @@ async function main() {
         await getUser(contract, "u2");
         tags = ["1","2","3"];
         tags = JSON.stringify(tags)
+        console.log(tags);
         await createDataset(contract, "dataset1", "the first dataset", "hash", "ipfs", "5", "u1", "100", tags);
         await getDataset(contract, "dataset1");
         await createOrder(contract, "u2", "dataset1", "100");

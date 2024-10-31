@@ -39,6 +39,7 @@ defineProps({
     default: "col-lg-9",
   },
 });
+
 </script>
 <script>
 export default {
@@ -81,7 +82,7 @@ export default {
           <div :class="`row ${index !== 0 ? 'mt-3' : ''}`">
             <div
               class="col-md-4 mt-md-0"
-              v-for="{ image, title, subtitle, route, id, pro } in items.slice(0, 9)"
+              v-for="{ image, title, subtitle, route, id, pro } in items"
               :key="title"
             >
               <ExampleCard

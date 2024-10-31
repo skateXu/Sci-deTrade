@@ -35,7 +35,7 @@ const paymentProof = ref('');
 // 获取数据集信息
 const fetchDataset = async () => {
   try {
-    const response = await axios.get(`/getdataset/${route.params.id}`);
+    const response = await axios.get('/getdataset',{ params: { id: route.params.id } });
     dataset.value = response.data;
   } catch (error) {
     console.error("Error fetching dataset:", error);

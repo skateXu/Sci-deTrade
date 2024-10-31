@@ -110,20 +110,19 @@ const fetchAccountInfo = async () => {
     });
     accountInfo.value.balance = response.data.result.Value;
   } catch (error) {
-    console.error('获取账户信息失败', error);
+    console.error('getUser fail', error);
   }
 };
 
 const handleDeposit = async () => {
   try {
-    const uID = publicKey.value; // 假设你要充值的用户 ID
-    const value = depositAmount.value; // 充值的金额
+    const uID = publicKey.value; 
+    const value = depositAmount.value; 
     await axios.post('/mint', { uID, value });
 
-    fetchAccountInfo(); // 充值成功后刷新账户信息
+    fetchAccountInfo(); 
   } catch (error) {
-    console.error('充值失败', error);
-    // 你可以在这里添加更多的错误处理逻辑
+    console.error('mint fail', error);
     this.errorMessage = 'Failed to deposit';
   }
 };
@@ -131,15 +130,14 @@ const handleDeposit = async () => {
 
 const handleWithdraw = async () => {
   try {
-    const uID = publicKey.value; // 假设你要充值的用户 ID
-    const value = withdrawAmount.value; // 充值的金额
+    const uID = publicKey.value;
+    const value = withdrawAmount.value; 
 
     await axios.post('/burn', { uID, value });
 
-    fetchAccountInfo(); // 充值成功后刷新账户信息
+    fetchAccountInfo(); 
   } catch (error) {
-    console.error('提款失败', error);
-    // 你可以在这里添加更多的错误处理逻辑
+    console.error('withdraw fail', error);
     this.errorMessage = 'Failed to deposit';
   }
 };

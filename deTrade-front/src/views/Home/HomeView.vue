@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 
 //example components
 import NavbarDefault from "../../components/NavbarDefault.vue";
@@ -8,18 +8,60 @@ import Header from "../../examples/Header.vue";
 
 // sections
 import HomeExample from "./Sections/HomeExample.vue";
-import data from "./Sections/Data/designBlocksData";
 import HomeInformation from "./Sections/HomeInformation.vue";
+// import data from "./Sections/Data/designBlocksData.js";
 
 //images
 import vueMkHeader from "@/assets/img/vue-mk-header.jpg";
+import imgStat from "@/assets/img/stat.png";
 
+// backend
+import axios from "@/api/axios";
 
 //hooks
 const body = document.getElementsByTagName("body")[0];
+const data = ref(null)
+const fetchData = async () => {
+  data.value = [{
+    heading: "数据集",
+    description:
+      "汇集各行业数据",
+      items: []
+  }];
+  try {
+    const response = await axios.get('/getDatasets');
+    const datasets = response.data.datasets;
+    var items = [{
+          id: "1",
+          image: imgStat,
+          title: "金融数据",
+          subtitle: "10GB",
+          route: "CreateOrder",
+          pro: false
+        }];
+    for (const dataset of datasets) {
+      var item = {
+          id: dataset.DatasetID,
+          image: imgStat,
+          title: dataset.Title,
+          subtitle: dataset.Description,
+          route: "CreateOrder",
+          pro: false
+        };
+        items.push(item);
+    }
+    data.value[0].items = items;
+  } catch (error) {
+    console.error('getUser fail', error);
+  }
+};
+
+
 onMounted(() => {
   body.classList.add("presentation-page");
   body.classList.add("bg-gray-200");
+  fetchData();
+
 });
 onUnmounted(() => {
   body.classList.remove("presentation-page");
@@ -61,7 +103,7 @@ onUnmounted(() => {
 
   <div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n6">
     <HomeInformation />
-    <HomeExample :data="data" />
+    <HomeExample  v-if="data" :data="data"/>
   </div>
 
 </template>

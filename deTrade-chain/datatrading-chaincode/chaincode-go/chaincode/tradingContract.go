@@ -260,7 +260,7 @@ func (s *SmartContract) CreateOrder(ctx contractapi.TransactionContextInterface,
 		return err
 	}
 	// add order
-	orderList.OrderIDs = append(orderList.OrderIDs, strconv.Itoa(orderList.Next+1))
+	orderList.OrderIDs = append(orderList.OrderIDs, "order"+strconv.Itoa(orderList.Next+1))
 	orderList.Next += 1
 	orderListJSON, err := json.Marshal(orderList)
 	if err != nil {

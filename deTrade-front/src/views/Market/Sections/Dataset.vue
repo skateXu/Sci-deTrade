@@ -2,11 +2,35 @@
 import { ref, computed } from "vue";
 import ExampleCard from "../../../components/ExampleCard.vue";
 
+
 const props = defineProps({
   data: {
     type: Array,
     required: true,
-    default: () => [],
+    heading: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    items: {
+      type: Array,
+      required: true,
+      image: {
+        type: String,
+        required: true,
+      },
+      title: {
+        type: String,
+        required: true,
+      },
+      subtitle: {
+        type: String,
+        required: true,
+      },
+    },
   },
   col1: {
     type: String,
@@ -20,23 +44,25 @@ const props = defineProps({
 
 // 搜索相关的响应式数据
 const searchQuery = ref("");
-const filteredItems = ref(props.data.map(item => item.items).flat()); // 初始化为所有数据集
-
-// 搜索方法
-const searchItems = () => {
+const filteredItems = computed(() => {
   if (!searchQuery.value) {
-    filteredItems.value = props.data.map(item => item.items).flat(); // 如果没有搜索，返回所有项目
-    return;
+    return props.data.map(item => item.items).flat(); // 如果没有搜索，返回所有项目
   }
 
   const query = searchQuery.value.toLowerCase();
-  filteredItems.value = props.data.map(item => item.items).flat().filter(item => {
+  return props.data.map(item => item.items).flat().filter(item => {
     return (
       item.title.toLowerCase().includes(query) ||  
       item.subtitle.toLowerCase().includes(query)
     );
   });
+});
+
+// 搜索方法
+const searchItems = () => {
+  // 计算属性会自动更新 filteredItems，这里不需要手动更新
 };
+
 </script>
 
 <script>
