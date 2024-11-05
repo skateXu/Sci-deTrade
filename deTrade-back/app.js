@@ -9,6 +9,7 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const { TextDecoder } = require('node:util');
 const config = require('./chain_config.js');
+const ipfs = require('./ipfs_config.js');
 const serverConfig = require('./server_config.js'); 
 
 
@@ -210,6 +211,34 @@ app.post('/handleOrder', async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 })
+
+// IPFS related operations
+app.post('/uploadFile', async (req, res) => {
+    try {
+        const { cid } = await ipfs.add({
+            path: 'hello.txt',
+            content: 'Hello, IPFS!'
+        });
+        
+        console.log(`File added with CID: ${cid}`);
+        res.json({ success: true, result:cid });
+    } catch (error) {
+        console.error('HandleOrder fail', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+})
+
+app.get('/downloadFile', async (req, res) => {
+    try {
+        const cid = req.query.ipfsAddress;
+        const order  = await getOrder(contract, id);
+        res.json({ success: true, order});
+    } catch (error) {
+        console.error('getOrder fail', error); 
+        res.status(500).json({ success: false, error: error.message });
+    }
+})
+
 
 
 app.listen(serverConfig.port, () => {

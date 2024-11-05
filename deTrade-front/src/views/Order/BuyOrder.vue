@@ -25,6 +25,19 @@ const order = ref({
   OrderID: '',
   PayHash: ''
 });
+
+const dataset = ref({
+  Title: '',
+  Description: '',
+  DatasetID: '',
+  Hash: '',
+  IpfsAddress: '',
+  N_subset: '',
+  Owner: '',
+  Price: '',
+  Tags: ''
+});
+
 const encryptionKey = ref('');
 const secretKey = ref('');
 
@@ -33,16 +46,18 @@ const fetchOrder = async () => {
   try {
     const response = await axios.get('/getorder',{params: { id: route.params.id },});
     order.value = response.data.order;
+    response = await axios.get('/getdataset',{ params: { id: order.value.DatasetID } });
+    dataset.value = response.data.dataset;
   } catch (error) {
     console.error("Error fetching order:", error);
   }
 };
 
-// 提交加密密钥
+// 提交支付密钥
 const submitSecretKey = async () => {
   try {
     // 调用后端接口，传递加密密钥口令
-    const response = await axios.post('/submit-encryption-key', {
+    const response = await axios.post('/submitSecret', {
       encryptionKey: encryptionKey.value
     });
     // 将返回的支付密钥填入输入框
@@ -54,11 +69,11 @@ const submitSecretKey = async () => {
   }
 };
 
-// 结束订单
+// 获取密钥
 const getEncryptionKey = async () => {
   try {
     // 调用后端接口，结束交易
-    await axios.post('/end-order', {
+    await axios.post('/getKey', {
       paymentKey: paymentKey.value
     });
     alert("订单已结束！");

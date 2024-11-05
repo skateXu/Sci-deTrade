@@ -37,7 +37,7 @@ const fetchDataset = async () => {
   try {
     const response = await axios.get('/getdataset',{ params: { id: route.params.id } });
     dataset.value = response.data.dataset;
-    dataset.value.Owner = dataset.value.Owner[0,8];
+    // dataset.value.Owner = dataset.value.Owner[0,8];
     // dataset.value.Id = route.params.id;
     console.log("dataset", dataset.value);
   } catch (error) {
@@ -75,7 +75,7 @@ const purchaseDataset = async () => {
 // 下载数据集
 const downloadDataset = async () => {
   try {
-    const response = await axios.get(`/download/${dataset.value.IpfsAddress}`, {
+    const response = await axios.get('/download', {
       responseType: 'blob'
     });
     const url = window.URL.createObjectURL(new Blob([response.data]));
