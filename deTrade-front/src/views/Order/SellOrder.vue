@@ -27,6 +27,7 @@ const order = ref({
 });
 const encryptionKey = ref('');
 const paymentKey = ref('');
+const n = ref('');
 
 // 获取订单信息
 const fetchOrder = async () => {
@@ -60,8 +61,9 @@ const endOrder = async () => {
   try {
     // 调用后端接口，结束交易
     await axios.post('/handleOrder', {
-      id: route.params.id,
-      paymentKey: paymentKey.value
+      orderID: route.params.id,
+      n:n.value,
+      payword: paymentKey.value
     });
     alert("订单已结束！");
   } catch (error) {

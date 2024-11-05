@@ -191,7 +191,7 @@ app.get('/getBuyOrders', async (req, res) => {
 app.get('/getOrder', async (req, res) => {
     try {
         const id = req.query.id;
-        const order  = await  getOrder(contract, id);
+        const order  = await getOrder(contract, id);
         res.json({ success: true, order});
     } catch (error) {
         console.error('getOrder fail', error); 
