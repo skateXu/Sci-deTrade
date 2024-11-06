@@ -25,6 +25,19 @@ const order = ref({
   OrderID: '',
   PayHash: ''
 });
+
+const dataset = ref({
+  Title: '',
+  Description: '',
+  DatasetID: '',
+  Hash: '',
+  IpfsAddress: '',
+  N_subset: '',
+  Owner: '',
+  Price: '',
+  Tags: ''
+});
+
 const encryptionKey = ref('');
 const paymentKey = ref('');
 const n = ref('');
@@ -34,6 +47,8 @@ const fetchOrder = async () => {
   try {
     const response = await axios.get('/getorder',{params: { id: route.params.id },});
     order.value = response.data.order;
+    response = await axios.get('/getdataset',{ params: { id: order.value.DatasetID } });
+    dataset.value = response.data.dataset;
   } catch (error) {
     console.error("Error fetching order:", error);
   }
@@ -43,7 +58,7 @@ const fetchOrder = async () => {
 const submitEncryptionKey = async () => {
   try {
     // 调用后端接口，传递加密密钥口令
-    const response = await axios.post('/handleOrder', {
+    const response = await axios.post('/submitKey', {
 
       encryptionKey: encryptionKey.value
     });
