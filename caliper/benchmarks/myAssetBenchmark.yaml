@@ -1,0 +1,30 @@
+test:
+    name: datatrading-contract-benchmark
+    description: test benchmark
+    workers:
+      type: local
+      number: 1
+    rounds:
+      - label: init
+        description: init
+        txDuration: 10  # 每轮测试持续 10 秒
+        rateControl: 
+          type: fixed-rate # 负载控制类型为固定负载
+          opts:
+            tps : 10 # 每秒 2 个事务（即负载为 2 TPS）
+        workload:
+          module: workload/test.js
+          arguments:
+            userNum: 2
+            userNumMax: 100
+            orderNum: 5
+            dataNum: 5
+            contractId: datatrading
+
+monitors:
+  resource:
+  - module: docker
+    options: 
+      interval: 5 # 每 5 秒收集一次资源数据
+      containers:
+      - all

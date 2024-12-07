@@ -1,5 +1,5 @@
 # 启动vue架构,将构建的dist目录复制到后端
-cd deTrade-front
+cd ../deTrade-front
 npm run build
 
 
