@@ -232,9 +232,11 @@ function createOrgs() {
     peer_cert admin Admin@org3.example.com org3
 
 
-    infoln "Creating Orderer Org Identities"
+    infoln "Creating Orderer0 Org Identities"
     #function_name cert-type   CN   
-    orderer_cert orderer orderer.example.com
+    orderer_cert orderer orderer0.orderer.example.com
+    orderer_cert orderer orderer1.orderer.example.com
+    orderer_cert orderer orderer2.orderer.example.com
     orderer_cert admin Admin@example.com
 
   fi 
@@ -272,6 +274,7 @@ function createOrgs() {
     infoln "Creating Orderer Org Identities"
 
     createOrderer
+
 
   fi
 
