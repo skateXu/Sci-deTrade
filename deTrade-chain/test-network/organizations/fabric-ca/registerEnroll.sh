@@ -336,13 +336,13 @@ function createOrderer() {
 
   infoln "Generating the orderer-tls certificates, use --csr.hosts to specify Subject Alternative Names"
   set -x
-  fabric-ca-client enroll -u https://orderer0:orderer0pw@localhost:6054 --caname ca-orderer -M "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer0.orderer.example.com/tls" --enrollment.profile tls --csr.hosts orderer.example.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/ordererOrg/ca-cert.pem"
+  fabric-ca-client enroll -u https://orderer0:orderer0pw@localhost:6054 --caname ca-orderer -M "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer0.orderer.example.com/tls" --enrollment.profile tls --csr.hosts orderer0.orderer.example.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/ordererOrg/ca-cert.pem"
   { set +x; } 2>/dev/null
 
-  fabric-ca-client enroll -u https://orderer1:orderer1pw@localhost:6054 --caname ca-orderer -M "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer1.orderer.example.com/tls" --enrollment.profile tls --csr.hosts orderer.example.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/ordererOrg/ca-cert.pem"
+  fabric-ca-client enroll -u https://orderer1:orderer1pw@localhost:6054 --caname ca-orderer -M "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer1.orderer.example.com/tls" --enrollment.profile tls --csr.hosts orderer1.orderer.example.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/ordererOrg/ca-cert.pem"
   { set +x; } 2>/dev/null
 
-  fabric-ca-client enroll -u https://orderer2:orderer2pw@localhost:6054 --caname ca-orderer -M "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer2.orderer.example.com/tls" --enrollment.profile tls --csr.hosts orderer.example.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/ordererOrg/ca-cert.pem"
+  fabric-ca-client enroll -u https://orderer2:orderer2pw@localhost:6054 --caname ca-orderer -M "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer2.orderer.example.com/tls" --enrollment.profile tls --csr.hosts orderer2.orderer.example.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/ordererOrg/ca-cert.pem"
   { set +x; } 2>/dev/null
 
 

@@ -158,7 +158,7 @@ function createOrgs() {
   if [ -d "organizations/peerOrganizations" ]; then
     rm -Rf organizations/peerOrganizations && rm -Rf organizations/ordererOrganizations
   fi
-
+  # infoln "delete origin organizations"
   # Create crypto material using cryptogen
   if [ "$CRYPTO" == "cryptogen" ]; then
     which cryptogen
@@ -207,7 +207,6 @@ function createOrgs() {
     if [ $res -ne 0 ]; then
       fatalln "Failed to generate certificates..."
     fi
-
   fi
 
   # Create crypto material using cfssl
@@ -248,7 +247,7 @@ function createOrgs() {
 
     . organizations/fabric-ca/registerEnroll.sh
 
-  #通过轮询检查 tls-cert.pem 文件是否生成，确保 CA 服务已完全启动并准备就绪,调用registerEnroll.sh的函数
+    #通过轮询检查 tls-cert.pem 文件是否生成，确保 CA 服务已完全启动并准备就绪,调用registerEnroll.sh的函数
     while :
     do
       if [ ! -f "organizations/fabric-ca/org1/tls-cert.pem" ]; then
@@ -274,7 +273,6 @@ function createOrgs() {
     infoln "Creating Orderer Org Identities"
 
     createOrderer
-
 
   fi
 
