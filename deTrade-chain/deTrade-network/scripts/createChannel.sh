@@ -118,20 +118,39 @@ infoln "Creating channel ${CHANNEL_NAME}"
 createChannel $BFT
 successln "Channel '$CHANNEL_NAME' created"
 
-## Join all the peers to the channel
-infoln "Joining org1 peer to the channel..."
-joinChannel 1
-infoln "Joining org2 peer to the channel..."
-joinChannel 2
-infoln "Joining org3 peer to the channel..."
-joinChannel 3
+# ## Join all the peers to the channel
+# infoln "Joining org1 peer to the channel..."
+# joinChannel 1
+# infoln "Joining org2 peer to the channel..."
+# joinChannel 2
+# infoln "Joining org3 peer to the channel..."
+# joinChannel 3
+
+# 组织数量
+ORG_COUNT=20
+
+
+# 安装链码到所有组织
+for (( i=1; i<=ORG_COUNT; i++ ))
+do
+  infoln "Joining org$i peer to the channel..."
+  joinChannel $i
+done
+
 
 ## Set the anchor peers for each org in the channel
-infoln "Setting anchor peer for org1..."
-setAnchorPeer 1
-infoln "Setting anchor peer for org2..."
-setAnchorPeer 2
-infoln "Setting anchor peer for org3..."
-setAnchorPeer 3
+# infoln "Setting anchor peer for org1..."
+# setAnchorPeer 1
+# infoln "Setting anchor peer for org2..."
+# setAnchorPeer 2
+# infoln "Setting anchor peer for org3..."
+# setAnchorPeer 3
+
+for (( i=1; i<=ORG_COUNT; i++ ))
+do
+  infoln "Setting anchor peer for org$i..."
+  setAnchorPeer $i
+done
+
 
 successln "Channel '$CHANNEL_NAME' joined"

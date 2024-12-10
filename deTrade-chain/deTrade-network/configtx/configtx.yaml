@@ -40,7 +40,6 @@ Organizations:
       - orderer0.orderer.example.com:7050
       - orderer1.orderer.example.com:7150
       - orderer2.orderer.example.com:7250
-  
   - &Org1
     # DefaultOrg defines the organization which is used in the sampleconfig
     # of the fabric.git development environment
@@ -110,6 +109,296 @@ Organizations:
       Endorsement:
         Type: Signature
         Rule: "OR('Org3MSP.peer')"
+  - &Org4
+    Name: Org4MSP
+    ID: Org4MSP
+    MSPDir: ../organizations/peerOrganizations/org4.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('Org4MSP.admin', 'Org4MSP.peer', 'Org4MSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('Org4MSP.admin', 'Org4MSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('Org4MSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('Org4MSP.peer')"
+  - &Org5
+    Name: Org5MSP
+    ID: Org5MSP
+    MSPDir: ../organizations/peerOrganizations/org5.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('Org5MSP.admin', 'Org5MSP.peer', 'Org5MSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('Org5MSP.admin', 'Org5MSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('Org5MSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('Org5MSP.peer')"
+  - &Org6
+    Name: Org6MSP
+    ID: Org6MSP
+    MSPDir: ../organizations/peerOrganizations/org6.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('Org6MSP.admin', 'Org6MSP.peer', 'Org6MSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('Org6MSP.admin', 'Org6MSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('Org6MSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('Org6MSP.peer')"
+  - &Org7
+    Name: Org7MSP
+    ID: Org7MSP
+    MSPDir: ../organizations/peerOrganizations/org7.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('Org7MSP.admin', 'Org7MSP.peer', 'Org7MSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('Org7MSP.admin', 'Org7MSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('Org7MSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('Org7MSP.peer')"
+  - &Org8
+    Name: Org8MSP
+    ID: Org8MSP
+    MSPDir: ../organizations/peerOrganizations/org8.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('Org8MSP.admin', 'Org8MSP.peer', 'Org8MSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('Org8MSP.admin', 'Org8MSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('Org8MSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('Org8MSP.peer')"
+  - &Org9
+    Name: Org9MSP
+    ID: Org9MSP
+    MSPDir: ../organizations/peerOrganizations/org9.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('Org9MSP.admin', 'Org9MSP.peer', 'Org9MSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('Org9MSP.admin', 'Org9MSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('Org9MSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('Org9MSP.peer')"
+  - &Org10
+    Name: Org10MSP
+    ID: Org10MSP
+    MSPDir: ../organizations/peerOrganizations/org10.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('Org10MSP.admin', 'Org10MSP.peer', 'Org10MSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('Org10MSP.admin', 'Org10MSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('Org10MSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('Org10MSP.peer')"
+  - &Org11
+    Name: Org11MSP
+    ID: Org11MSP
+    MSPDir: ../organizations/peerOrganizations/org11.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('Org11MSP.admin', 'Org11MSP.peer', 'Org11MSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('Org11MSP.admin', 'Org11MSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('Org11MSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('Org11MSP.peer')"
+  - &Org12
+    Name: Org12MSP
+    ID: Org12MSP
+    MSPDir: ../organizations/peerOrganizations/org12.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('Org12MSP.admin', 'Org12MSP.peer', 'Org12MSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('Org12MSP.admin', 'Org12MSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('Org12MSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('Org12MSP.peer')"
+  - &Org13
+    Name: Org13MSP
+    ID: Org13MSP
+    MSPDir: ../organizations/peerOrganizations/org13.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('Org13MSP.admin', 'Org13MSP.peer', 'Org13MSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('Org13MSP.admin', 'Org13MSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('Org13MSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('Org13MSP.peer')"
+  - &Org14
+    Name: Org14MSP
+    ID: Org14MSP
+    MSPDir: ../organizations/peerOrganizations/org14.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('Org14MSP.admin', 'Org14MSP.peer', 'Org14MSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('Org14MSP.admin', 'Org14MSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('Org14MSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('Org14MSP.peer')"
+  - &Org15
+    Name: Org15MSP
+    ID: Org15MSP
+    MSPDir: ../organizations/peerOrganizations/org15.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('Org15MSP.admin', 'Org15MSP.peer', 'Org15MSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('Org15MSP.admin', 'Org15MSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('Org15MSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('Org15MSP.peer')"
+  - &Org16
+    Name: Org16MSP
+    ID: Org16MSP
+    MSPDir: ../organizations/peerOrganizations/org16.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('Org16MSP.admin', 'Org16MSP.peer', 'Org16MSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('Org16MSP.admin', 'Org16MSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('Org16MSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('Org16MSP.peer')"
+  - &Org17
+    Name: Org17MSP
+    ID: Org17MSP
+    MSPDir: ../organizations/peerOrganizations/org17.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('Org17MSP.admin', 'Org17MSP.peer', 'Org17MSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('Org17MSP.admin', 'Org17MSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('Org17MSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('Org17MSP.peer')"
+  - &Org18
+    Name: Org18MSP
+    ID: Org18MSP
+    MSPDir: ../organizations/peerOrganizations/org18.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('Org18MSP.admin', 'Org18MSP.peer', 'Org18MSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('Org18MSP.admin', 'Org18MSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('Org18MSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('Org18MSP.peer')"
+  - &Org19
+    Name: Org19MSP
+    ID: Org19MSP
+    MSPDir: ../organizations/peerOrganizations/org19.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('Org19MSP.admin', 'Org19MSP.peer', 'Org19MSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('Org19MSP.admin', 'Org19MSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('Org19MSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('Org19MSP.peer')"
+  - &Org20
+    Name: Org20MSP
+    ID: Org20MSP
+    MSPDir: ../organizations/peerOrganizations/org20.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('Org20MSP.admin', 'Org20MSP.peer', 'Org20MSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('Org20MSP.admin', 'Org20MSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('Org20MSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('Org20MSP.peer')"
+  
 ################################################################################
 #
 #   SECTION: Capabilities
@@ -314,4 +603,21 @@ Profiles:
         - *Org1
         - *Org2
         - *Org3
+        - *Org4
+        - *Org5
+        - *Org6
+        - *Org7
+        - *Org8
+        - *Org9
+        - *Org10
+        - *Org11
+        - *Org12
+        - *Org13
+        - *Org14
+        - *Org15
+        - *Org16
+        - *Org17
+        - *Org18
+        - *Org19
+        - *Org20
       Capabilities: *ApplicationCapabilities

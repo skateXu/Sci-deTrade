@@ -18,7 +18,7 @@ organizations:
       certificates:
       - name: 'Admin@org1.example.com'
         clientPrivateKey:
-          path: '../deTrade-chain/deTrade-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/cab5db6fd3657e41fbeebfb1d255724471ea9020fd6cb8bc2da6011ea78d59c1_sk'
+          path: '../deTrade-chain/deTrade-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/31053314099125ca611ec1e7922c5d52f7072cc56469a45dd5018377278e10df_sk'
         clientSignedCert:
           path: '../deTrade-chain/deTrade-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/cert.pem'
     connectionProfile:

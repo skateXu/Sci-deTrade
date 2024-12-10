@@ -17,13 +17,21 @@
 TEST_NETWORK_HOME=${TEST_NETWORK_HOME:-${PWD}}
 . ${TEST_NETWORK_HOME}/scripts/utils.sh
 
+# Port mappings for 20 organizations
+declare -A PEER_PORTS=(
+  [1]=7051 [2]=8051 [3]=9051 [4]=10051 [5]=11051 [6]=12051 [7]=13051 [8]=14051 [9]=15051 [10]=16051
+  [11]=17051 [12]=18051 [13]=19051 [14]=20051 [15]=21051 [16]=22051 [17]=23051 [18]=24051 [19]=25051 [20]=26051
+)
+
+
 export CORE_PEER_TLS_ENABLED=true
 export ORDERER_CA=${TEST_NETWORK_HOME}/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
-export PEER0_ORG1_CA=${TEST_NETWORK_HOME}/organizations/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
-export PEER0_ORG2_CA=${TEST_NETWORK_HOME}/organizations/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
-export PEER0_ORG3_CA=${TEST_NETWORK_HOME}/organizations/peerOrganizations/org3.example.com/tlsca/tlsca.org3.example.com-cert.pem
+# export PEER0_ORG1_CA=${TEST_NETWORK_HOME}/organizations/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
+# export PEER0_ORG2_CA=${TEST_NETWORK_HOME}/organizations/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
+# export PEER0_ORG3_CA=${TEST_NETWORK_HOME}/organizations/peerOrganizations/org3.example.com/tlsca/tlsca.org3.example.com-cert.pem
 
 # Set environment variables for the peer org
+
 setGlobals() {
   local USING_ORG=""
   if [ -z "$OVERRIDE_ORG" ]; then
@@ -32,21 +40,17 @@ setGlobals() {
     USING_ORG="${OVERRIDE_ORG}"
   fi
   infoln "Using organization ${USING_ORG}"
-  if [ $USING_ORG -eq 1 ]; then
-    export CORE_PEER_LOCALMSPID=Org1MSP
-    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG1_CA
-    export CORE_PEER_MSPCONFIGPATH=${TEST_NETWORK_HOME}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
-    export CORE_PEER_ADDRESS=localhost:7051
-  elif [ $USING_ORG -eq 2 ]; then
-    export CORE_PEER_LOCALMSPID=Org2MSP
-    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG2_CA
-    export CORE_PEER_MSPCONFIGPATH=${TEST_NETWORK_HOME}/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
-    export CORE_PEER_ADDRESS=localhost:8051
-  elif [ $USING_ORG -eq 3 ]; then
-    export CORE_PEER_LOCALMSPID=Org3MSP
-    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG3_CA
-    export CORE_PEER_MSPCONFIGPATH=${TEST_NETWORK_HOME}/organizations/peerOrganizations/org3.example.com/users/Admin@org3.example.com/msp
-    export CORE_PEER_ADDRESS=localhost:9051
+
+  if [ $USING_ORG -ge 1 ] && [ $USING_ORG -le 20 ]; then
+    # Dynamically set the organization-specific variables
+    export CORE_PEER_LOCALMSPID="Org${USING_ORG}MSP"
+    export CORE_PEER_TLS_ROOTCERT_FILE="${TEST_NETWORK_HOME}/organizations/peerOrganizations/org${USING_ORG}.example.com/tlsca/tlsca.org${USING_ORG}.example.com-cert.pem"
+    export CORE_PEER_MSPCONFIGPATH="${TEST_NETWORK_HOME}/organizations/peerOrganizations/org${USING_ORG}.example.com/users/Admin@org${USING_ORG}.example.com/msp"
+    export CORE_PEER_ADDRESS=localhost:${PEER_PORTS[$USING_ORG]}
+
+    # Set the appropriate CA  dynamically
+    export PEER0_ORG${USING_ORG}_CA="${TEST_NETWORK_HOME}/organizations/peerOrganizations/org${USING_ORG}.example.com/tlsca/tlsca.org${USING_ORG}.example.com-cert.pem"
+
   else
     errorln "ORG Unknown"
   fi
@@ -55,6 +59,37 @@ setGlobals() {
     env | grep CORE
   fi
 }
+# setGlobals() {
+#   local USING_ORG=""
+#   if [ -z "$OVERRIDE_ORG" ]; then
+#     USING_ORG=$1
+#   else
+#     USING_ORG="${OVERRIDE_ORG}"
+#   fi
+#   infoln "Using organization ${USING_ORG}"
+#   if [ $USING_ORG -eq 1 ]; then
+#     export CORE_PEER_LOCALMSPID=Org1MSP
+#     export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG1_CA
+#     export CORE_PEER_MSPCONFIGPATH=${TEST_NETWORK_HOME}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+#     export CORE_PEER_ADDRESS=localhost:7051
+#   elif [ $USING_ORG -eq 2 ]; then
+#     export CORE_PEER_LOCALMSPID=Org2MSP
+#     export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG2_CA
+#     export CORE_PEER_MSPCONFIGPATH=${TEST_NETWORK_HOME}/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+#     export CORE_PEER_ADDRESS=localhost:8051
+#   elif [ $USING_ORG -eq 3 ]; then
+#     export CORE_PEER_LOCALMSPID=Org3MSP
+#     export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG3_CA
+#     export CORE_PEER_MSPCONFIGPATH=${TEST_NETWORK_HOME}/organizations/peerOrganizations/org3.example.com/users/Admin@org3.example.com/msp
+#     export CORE_PEER_ADDRESS=localhost:9051
+#   else
+#     errorln "ORG Unknown"
+#   fi
+
+#   if [ "$VERBOSE" = "true" ]; then
+#     env | grep CORE
+#   fi
+# }
 
 # parsePeerConnectionParameters $@
 # Helper function that sets the peer connection parameters for a chaincode

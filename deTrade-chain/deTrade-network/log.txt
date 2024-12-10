@@ -1,27 +1,24 @@
-Status: 201
 {
-	"name": "mychannel",
-	"url": "/participation/v1/channels/mychannel",
-	"consensusRelation": "consenter",
-	"status": "active",
-	"height": 1
+	"approvals": {
+		"Org10MSP": false,
+		"Org11MSP": false,
+		"Org12MSP": false,
+		"Org13MSP": false,
+		"Org14MSP": false,
+		"Org15MSP": false,
+		"Org16MSP": false,
+		"Org17MSP": false,
+		"Org18MSP": false,
+		"Org19MSP": false,
+		"Org1MSP": true,
+		"Org20MSP": false,
+		"Org2MSP": true,
+		"Org3MSP": true,
+		"Org4MSP": true,
+		"Org5MSP": true,
+		"Org6MSP": true,
+		"Org7MSP": false,
+		"Org8MSP": false,
+		"Org9MSP": false
+	}
 }
-
-Status: 201
-{
-	"name": "mychannel",
-	"url": "/participation/v1/channels/mychannel",
-	"consensusRelation": "consenter",
-	"status": "active",
-	"height": 1
-}
-
-Status: 201
-{
-	"name": "mychannel",
-	"url": "/participation/v1/channels/mychannel",
-	"consensusRelation": "consenter",
-	"status": "active",
-	"height": 1
-}
-

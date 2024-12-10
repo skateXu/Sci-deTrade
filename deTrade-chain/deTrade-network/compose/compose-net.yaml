@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
+# 三节点
 
 version: '3.7'
 
@@ -47,7 +48,7 @@ services:
       - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7053
       - ORDERER_OPERATIONS_LISTENADDRESS=orderer0.orderer.example.com:9441
       - ORDERER_METRICS_PROVIDER=prometheus
-      - GODEBUG=netdns=go  # 添加环境变量
+
     working_dir: /root
     command: orderer
     volumes:
@@ -91,7 +92,7 @@ services:
       - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7055
       - ORDERER_OPERATIONS_LISTENADDRESS=orderer1.orderer.example.com:9442
       - ORDERER_METRICS_PROVIDER=prometheus
-      - GODEBUG=netdns=go  # 添加环境变量
+      # - GODEBUG=netdns=go   添加环境变量
     working_dir: /root
     command: orderer
     volumes:
@@ -135,7 +136,7 @@ services:
       - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7057
       - ORDERER_OPERATIONS_LISTENADDRESS=orderer2.orderer.example.com:9443
       - ORDERER_METRICS_PROVIDER=prometheus
-      - GODEBUG=netdns=go  # 添加环境变量
+
     working_dir: /root
     command: orderer
     volumes:
@@ -179,7 +180,6 @@ services:
       - CORE_METRICS_PROVIDER=prometheus
       - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0org1"}
       - CORE_CHAINCODE_EXECUTETIMEOUT=300s
-      - GODEBUG=netdns=go  # 添加环境变量
     volumes:
       - ../organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com:/etc/hyperledger/fabric
       - peer0.org1.example.com:/var/hyperledger/production
@@ -222,7 +222,7 @@ services:
       - CORE_METRICS_PROVIDER=prometheus
       - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0org2"}
       - CORE_CHAINCODE_EXECUTETIMEOUT=300s
-      - GODEBUG=netdns=go  # 添加环境变量
+
     volumes:
       - ../organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com:/etc/hyperledger/fabric
       - peer0.org2.example.com:/var/hyperledger/production
@@ -265,7 +265,7 @@ services:
       - CORE_METRICS_PROVIDER=prometheus
       - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0org3"}
       - CORE_CHAINCODE_EXECUTETIMEOUT=300s
-      - GODEBUG=netdns=go  # 添加环境变量
+
 
     volumes:
       - ../organizations/peerOrganizations/org3.example.com/peers/peer0.org3.example.com:/etc/hyperledger/fabric

@@ -112,7 +112,30 @@ function removeUnwantedImages() {
 function networkDown() {
     local temp_compose=compose-net.yaml
     #   COMPOSE_FILE_BASE=compose-bft-test-net.yaml
-    COMPOSE_BASE_FILES="-f compose/compose-net.yaml -f compose/docker/docker-compose-net.yaml"
+    # COMPOSE_BASE_FILES="-f compose/compose-net.yaml -f compose/docker/docker-compose-net.yaml"
+    COMPOSE_BASE_FILES="-f compose/compose-net-orderer.yaml \
+                    -f compose/compose-net-org1.yaml \
+                    -f compose/compose-net-org2.yaml \
+                    -f compose/compose-net-org3.yaml \
+                    -f compose/compose-net-org4.yaml \
+                    -f compose/compose-net-org5.yaml \
+                    -f compose/compose-net-org6.yaml \
+                    -f compose/compose-net-org7.yaml \
+                    -f compose/compose-net-org8.yaml \
+                    -f compose/compose-net-org9.yaml \
+                    -f compose/compose-net-org10.yaml \
+                    -f compose/compose-net-org11.yaml \
+                    -f compose/compose-net-org12.yaml \
+                    -f compose/compose-net-org13.yaml \
+                    -f compose/compose-net-org14.yaml \
+                    -f compose/compose-net-org15.yaml \
+                    -f compose/compose-net-org16.yaml \
+                    -f compose/compose-net-org17.yaml \
+                    -f compose/compose-net-org18.yaml \
+                    -f compose/compose-net-org19.yaml \
+                    -f compose/compose-net-org20.yaml \
+                    -f compose/docker/docker-compose-net.yaml"
+
     COMPOSE_COUCH_FILES="-f compose/compose-couch.yaml -f compose/docker/docker-compose-couch.yaml"
     COMPOSE_CA_FILES="-f compose/compose-ca.yaml -f compose/docker/docker-compose-ca.yaml"
     COMPOSE_FILES="${COMPOSE_BASE_FILES} ${COMPOSE_COUCH_FILES} ${COMPOSE_CA_FILES}"
@@ -125,7 +148,10 @@ function networkDown() {
 
     # Bring down the network, deleting the volumes
 
-    docker volume rm compose_orderer0.orderer.example.com compose_orderer1.orderer.example.com compose_orderer2.orderer.example.com compose_peer0.org1.example.com compose_peer0.org2.example.com compose_peer0.org3.example.com
+    # docker volume rm compose_orderer0.orderer.example.com compose_orderer1.orderer.example.com compose_orderer2.orderer.example.com compose_peer0.org1.example.com compose_peer0.org2.example.com compose_peer0.org3.example.com
+    # 删除所有与组织相关的卷
+    docker volume rm $(docker volume ls -q | grep "compose_.*\.example\.com")
+
     #Cleanup the chaincode containers
     clearContainers
     #Cleanup images
@@ -133,9 +159,13 @@ function networkDown() {
     # remove orderer block and other channel configuration transactions and certs
     docker run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf system-genesis-block/*.block organizations/peerOrganizations organizations/ordererOrganizations'
     ## remove fabric ca artifacts
-    docker run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/org1/msp organizations/fabric-ca/org1/tls-cert.pem organizations/fabric-ca/org1/ca-cert.pem organizations/fabric-ca/org1/IssuerPublicKey organizations/fabric-ca/org1/IssuerRevocationPublicKey organizations/fabric-ca/org1/fabric-ca-server.db'
-    docker run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/org2/msp organizations/fabric-ca/org2/tls-cert.pem organizations/fabric-ca/org2/ca-cert.pem organizations/fabric-ca/org2/IssuerPublicKey organizations/fabric-ca/org2/IssuerRevocationPublicKey organizations/fabric-ca/org2/fabric-ca-server.db'
-    docker run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/org3/msp organizations/fabric-ca/org3/tls-cert.pem organizations/fabric-ca/org3/ca-cert.pem organizations/fabric-ca/org3/IssuerPublicKey organizations/fabric-ca/org3/IssuerRevocationPublicKey organizations/fabric-ca/org3/fabric-ca-server.db'
+    for i in {1..20}; do
+        docker run --rm -v "$(pwd):/data" busybox sh -c "cd /data && rm -rf organizations/fabric-ca/org${i}/msp organizations/fabric-ca/org${i}/tls-cert.pem organizations/fabric-ca/org${i}/ca-cert.pem organizations/fabric-ca/org${i}/IssuerPublicKey organizations/fabric-ca/org${i}/IssuerRevocationPublicKey organizations/fabric-ca/org${i}/fabric-ca-server.db"
+    done
+
+    # docker run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/org1/msp organizations/fabric-ca/org1/tls-cert.pem organizations/fabric-ca/org1/ca-cert.pem organizations/fabric-ca/org1/IssuerPublicKey organizations/fabric-ca/org1/IssuerRevocationPublicKey organizations/fabric-ca/org1/fabric-ca-server.db'
+    # docker run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/org2/msp organizations/fabric-ca/org2/tls-cert.pem organizations/fabric-ca/org2/ca-cert.pem organizations/fabric-ca/org2/IssuerPublicKey organizations/fabric-ca/org2/IssuerRevocationPublicKey organizations/fabric-ca/org2/fabric-ca-server.db'
+    # docker run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/org3/msp organizations/fabric-ca/org3/tls-cert.pem organizations/fabric-ca/org3/ca-cert.pem organizations/fabric-ca/org3/IssuerPublicKey organizations/fabric-ca/org3/IssuerRevocationPublicKey organizations/fabric-ca/org3/fabric-ca-server.db'
     docker run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/ordererOrg/msp organizations/fabric-ca/ordererOrg/tls-cert.pem organizations/fabric-ca/ordererOrg/ca-cert.pem organizations/fabric-ca/ordererOrg/IssuerPublicKey organizations/fabric-ca/ordererOrg/IssuerRevocationPublicKey organizations/fabric-ca/ordererOrg/fabric-ca-server.db'
     # remove channel and script artifacts
     docker run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf channel-artifacts log.txt *.tar.gz'
@@ -160,16 +190,71 @@ function createOrgs() {
             break
         fi
     done
+    
     infoln "Creating Org1 Identities"
-    createOrg1
+    createOrg "org1" "7054" "ca-org1"
+
     infoln "Creating Org2 Identities"
-    createOrg2
+    createOrg "org2" "8054" "ca-org2"
+
     infoln "Creating Org3 Identities"
-    createOrg3
+    createOrg "org3" "9054" "ca-org3"
+
+    infoln "Creating Org4 Identities"
+    createOrg "org4" "10054" "ca-org4"
+
+    infoln "Creating Org5 Identities"
+    createOrg "org5" "11054" "ca-org5"
+
+    infoln "Creating Org6 Identities"
+    createOrg "org6" "12054" "ca-org6"
+
+    infoln "Creating Org7 Identities"
+    createOrg "org7" "13054" "ca-org7"
+
+    infoln "Creating Org8 Identities"
+    createOrg "org8" "14054" "ca-org8"
+
+    infoln "Creating Org9 Identities"
+    createOrg "org9" "15054" "ca-org9"
+
+    infoln "Creating Org10 Identities"
+    createOrg "org10" "16054" "ca-org10"
+
+    infoln "Creating Org11 Identities"
+    createOrg "org11" "17054" "ca-org11"
+
+    infoln "Creating Org12 Identities"
+    createOrg "org12" "18054" "ca-org12"
+
+    infoln "Creating Org13 Identities"
+    createOrg "org13" "19054" "ca-org13"
+
+    infoln "Creating Org14 Identities"
+    createOrg "org14" "20054" "ca-org14"
+
+    infoln "Creating Org15 Identities"
+    createOrg "org15" "21054" "ca-org15"
+
+    infoln "Creating Org16 Identities"
+    createOrg "org16" "22054" "ca-org16"
+
+    infoln "Creating Org17 Identities"
+    createOrg "org17" "23054" "ca-org17"
+
+    infoln "Creating Org18 Identities"
+    createOrg "org18" "24054" "ca-org18"
+
+    infoln "Creating Org19 Identities"
+    createOrg "org19" "25054" "ca-org19"
+
+    infoln "Creating Org20 Identities"
+    createOrg "org20" "26054" "ca-org20"
+
     infoln "Creating Orderer Org Identities"
     createOrderer
 
-    infoln "Generating CCP files for Org1 \ Org2 \ Org3"
+    infoln "Generating CCP files for Orgs"
     ./organizations/ccp-generate.sh
 }
 
@@ -183,7 +268,29 @@ function networkUp() {
     fi
 
     # 基础docker文件，扩展文件（docker sock）
-    COMPOSE_FILES="-f compose/compose-net.yaml -f compose/docker/docker-compose-net.yaml"
+    # COMPOSE_FILES="-f compose/compose-net.yaml -f compose/docker/docker-compose-net.yaml"
+    COMPOSE_FILES=" -f compose/compose-net-orderer.yaml \
+                    -f compose/compose-net-org1.yaml \
+                    -f compose/compose-net-org2.yaml \
+                    -f compose/compose-net-org3.yaml \
+                    -f compose/compose-net-org4.yaml \
+                    -f compose/compose-net-org5.yaml \
+                    -f compose/compose-net-org6.yaml \
+                    -f compose/compose-net-org7.yaml \
+                    -f compose/compose-net-org8.yaml \
+                    -f compose/compose-net-org9.yaml \
+                    -f compose/compose-net-org10.yaml \
+                    -f compose/compose-net-org11.yaml \
+                    -f compose/compose-net-org12.yaml \
+                    -f compose/compose-net-org13.yaml \
+                    -f compose/compose-net-org14.yaml \
+                    -f compose/compose-net-org15.yaml \
+                    -f compose/compose-net-org16.yaml \
+                    -f compose/compose-net-org17.yaml \
+                    -f compose/compose-net-org18.yaml \
+                    -f compose/compose-net-org19.yaml \
+                    -f compose/compose-net-org20.yaml \
+                    -f compose/docker/docker-compose-net.yaml"
 
     DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES} up -d 2>&1
 
@@ -196,7 +303,6 @@ function networkUp() {
 # 启动网络
 infoln "Starting nodes with CLI timeout of '${MAX_RETRY}' tries and CLI delay of '${CLI_DELAY}' seconds and using database '${DATABASE}' ${CRYPTO_MODE}"
 networkUp
-
 
 # 创建通道
 
@@ -313,10 +419,10 @@ function listChaincode() {
 
 }
 
-infoln "query the chaincode installed:"
+infoln "test:query the chaincode installed for 1/2/3"
 listChaincode
 
-
+infoln "set the peer environment virable"
 export PATH=${PWD}/../bin:$PATH
 export FABRIC_CFG_PATH=$PWD/../config/
 export CORE_PEER_TLS_ENABLED=true
@@ -351,4 +457,3 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.examp
 #     chaincodeQuery $ORG $CHANNEL_NAME $CC_NAME $CC_QUERY_CONSTRUCTOR
 
 # }
-

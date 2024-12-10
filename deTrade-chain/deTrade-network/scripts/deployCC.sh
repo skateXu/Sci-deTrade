@@ -73,58 +73,114 @@ checkPrereqs
 
 PACKAGE_ID=$(peer lifecycle chaincode calculatepackageid ${CC_NAME}.tar.gz)
 
-## Install chaincode on peer0.org1 and peer0.org2
-infoln "Installing chaincode on peer0.org1..."
-installChaincode 1
-infoln "Install chaincode on peer0.org2..."
-installChaincode 2
-infoln "Install chaincode on peer0.org3..."
-installChaincode 3
+
+# 组织数量
+ORG_COUNT=20
+
+
+# 安装链码到所有组织
+for (( i=1; i<=ORG_COUNT; i++ ))
+do
+  infoln "Installing chaincode on peer0.org$i..."
+  installChaincode $i
+done
 
 resolveSequence
 
-## query whether the chaincode is installed
-queryInstalled 1
+# 查询每个组织是否安装链码
+for (( i=1; i<=ORG_COUNT; i++ ))
+do
+  queryInstalled $i
+done
 
-## approve the definition for org1
-approveForMyOrg 1
+# 依次审批每个组织的链码
+for (( i=1; i<=ORG_COUNT; i++ ))
+do
+  approveForMyOrg $i
+  # 检查每个组织的链码提交准备状态
+  for (( j=1; j<=ORG_COUNT; j++ ))
+  do
+    if [ $j -le $i ]; then
+      checkCommitReadiness $j "\"Org${j}MSP\": true"
+    else
+      checkCommitReadiness $j "\"Org${j}MSP\": false"
+    fi
+  done
+done
 
-## check whether the chaincode definition is ready to be committed
-## expect org1 to have approved and org2 not to
-checkCommitReadiness 1 "\"Org1MSP\": true" "\"Org2MSP\": false" "\"Org3MSP\": false"
-checkCommitReadiness 2 "\"Org1MSP\": true" "\"Org2MSP\": false" "\"Org3MSP\": false"
-checkCommitReadiness 3 "\"Org1MSP\": true" "\"Org2MSP\": false" "\"Org3MSP\": false"
 
+# 提交链码定义
+commitChaincodeDefinition $(seq 1 $ORG_COUNT)
 
-## now approve also for org2
-approveForMyOrg 2
+# 查询提交的链码定义
+for (( i=1; i<=ORG_COUNT; i++ ))
+do
+  queryCommitted $i
+done
 
-## check whether the chaincode definition is ready to be committed
-## expect them both to have approved
-checkCommitReadiness 1 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Org3MSP\": false"
-checkCommitReadiness 2 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Org3MSP\": false"
-checkCommitReadiness 3 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Org3MSP\": false"
-
-approveForMyOrg 3
-
-checkCommitReadiness 1 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Org3MSP\": true"
-checkCommitReadiness 2 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Org3MSP\": true"
-checkCommitReadiness 3 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Org3MSP\": true"
-
-## now that we know for sure both orgs have approved, commit the definition
-commitChaincodeDefinition 1 2 3
-
-## query on both orgs to see that the definition committed successfully
-queryCommitted 1
-queryCommitted 2
-queryCommitted 3
-
-## Invoke the chaincode - this does require that the chaincode have the 'initLedger'
-## method defined
+# 调用链码
 if [ "$CC_INIT_FCN" = "NA" ]; then
   infoln "Chaincode initialization is not required"
 else
-  chaincodeInvokeInit 1 2 3
+  chaincodeInvokeInit $(seq 1 $ORG_COUNT)
 fi
 
 exit 0
+
+# ## Install chaincode on peer0.org1 and peer0.org2
+# infoln "Installing chaincode on peer0.org1..."
+# installChaincode 1
+# infoln "Install chaincode on peer0.org2..."
+# installChaincode 2
+# infoln "Install chaincode on peer0.org3..."
+# installChaincode 3
+
+# resolveSequence
+
+# ## query whether the chaincode is installed
+# queryInstalled 1
+
+# ## approve the definition for org1
+# approveForMyOrg 1
+
+# ## check whether the chaincode definition is ready to be committed
+# ## expect org1 to have approved and org2 not to
+# checkCommitReadiness 1 "\"Org1MSP\": true" "\"Org2MSP\": false" "\"Org3MSP\": false"
+# checkCommitReadiness 2 "\"Org1MSP\": true" "\"Org2MSP\": false" "\"Org3MSP\": false"
+# checkCommitReadiness 3 "\"Org1MSP\": true" "\"Org2MSP\": false" "\"Org3MSP\": false"
+
+
+# ## now approve also for org2
+# approveForMyOrg 2
+
+# ## check whether the chaincode definition is ready to be committed
+# ## expect them both to have approved
+# checkCommitReadiness 1 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Org3MSP\": false"
+# checkCommitReadiness 2 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Org3MSP\": false"
+# checkCommitReadiness 3 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Org3MSP\": false"
+
+# approveForMyOrg 3
+
+# checkCommitReadiness 1 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Org3MSP\": true"
+# checkCommitReadiness 2 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Org3MSP\": true"
+# checkCommitReadiness 3 "\"Org1MSP\": true" "\"Org2MSP\": true" "\"Org3MSP\": true"
+
+# ## now that we know for sure both orgs have approved, commit the definition
+# commitChaincodeDefinition 1 2 3
+
+# ## query on both orgs to see that the definition committed successfully
+# queryCommitted 1
+# queryCommitted 2
+# queryCommitted 3
+
+# ## Invoke the chaincode - this does require that the chaincode have the 'initLedger'
+
+# ## method defined
+# if [ "$CC_INIT_FCN" = "NA" ]; then
+#   infoln "Chaincode initialization is not required"
+# else
+#   chaincodeInvokeInit 1 2 3
+# fi
+
+# exit 0
+
