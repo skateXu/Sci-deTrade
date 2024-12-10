@@ -79,7 +79,7 @@ function checkPrereqs() {
   infoln "DOCKER_IMAGE_VERSION=$DOCKER_IMAGE_VERSION"
 
   if [ "$LOCAL_VERSION" != "$DOCKER_IMAGE_VERSION" ]; then
-    warnln "Local fabric binaries and docker images are out of  sync. This may cause problems."
+    warnln "Local fabric binaries and docker images are out of sync. This may cause problems."
   fi
 
   for UNSUPPORTED_VERSION in $NONWORKING_VERSIONS; do
@@ -158,7 +158,7 @@ function createOrgs() {
   if [ -d "organizations/peerOrganizations" ]; then
     rm -Rf organizations/peerOrganizations && rm -Rf organizations/ordererOrganizations
   fi
-  # infoln "delete origin organizations"
+
   # Create crypto material using cryptogen
   if [ "$CRYPTO" == "cryptogen" ]; then
     which cryptogen
@@ -186,17 +186,6 @@ function createOrgs() {
     if [ $res -ne 0 ]; then
       fatalln "Failed to generate certificates..."
     fi
-     
-   #org3_1207 : add crypto material using cryptogen
-    infoln "Creating Org3 Identities"
-
-    set -x
-    cryptogen generate --config=./organizations/cryptogen/crypto-config-org3.yaml --output="organizations"
-    res=$?
-    { set +x; } 2>/dev/null
-    if [ $res -ne 0 ]; then
-      fatalln "Failed to generate certificates..."
-    fi
 
     infoln "Creating Orderer Org Identities"
 
@@ -207,14 +196,13 @@ function createOrgs() {
     if [ $res -ne 0 ]; then
       fatalln "Failed to generate certificates..."
     fi
+
   fi
 
   # Create crypto material using cfssl
   if [ "$CRYPTO" == "cfssl" ]; then
 
     . organizations/cfssl/registerEnroll.sh
-
-    infoln "Creating Org1 Identities"
     #function_name cert-type   CN   org
     peer_cert peer peer0.org1.example.com org1
     peer_cert admin Admin@org1.example.com org1
@@ -224,18 +212,9 @@ function createOrgs() {
     peer_cert peer peer0.org2.example.com org2
     peer_cert admin Admin@org2.example.com org2
 
-    #org3_1207 : add crypto material using cfssl
-    infoln "Creating Org3 Identities"
-    #function_name cert-type   CN   org
-    peer_cert peer peer0.org3.example.com org3
-    peer_cert admin Admin@org3.example.com org3
-
-
-    infoln "Creating Orderer0 Org Identities"
+    infoln "Creating Orderer Org Identities"
     #function_name cert-type   CN   
-    orderer_cert orderer orderer0.orderer.example.com
-    orderer_cert orderer orderer1.orderer.example.com
-    orderer_cert orderer orderer2.orderer.example.com
+    orderer_cert orderer orderer.example.com
     orderer_cert admin Admin@example.com
 
   fi 
@@ -247,7 +226,6 @@ function createOrgs() {
 
     . organizations/fabric-ca/registerEnroll.sh
 
-    #通过轮询检查 tls-cert.pem 文件是否生成，确保 CA 服务已完全启动并准备就绪,调用registerEnroll.sh的函数
     while :
     do
       if [ ! -f "organizations/fabric-ca/org1/tls-cert.pem" ]; then
@@ -264,11 +242,6 @@ function createOrgs() {
     infoln "Creating Org2 Identities"
 
     createOrg2
-    #org3_1207 : add crypto material using Fabric CA
-
-    infoln "Creating Org3 Identities"
-
-    createOrg3
 
     infoln "Creating Orderer Org Identities"
 
@@ -276,7 +249,7 @@ function createOrgs() {
 
   fi
 
-  infoln "Generating CCP files for Org1 \ Org2 \ Org3"
+  infoln "Generating CCP files for Org1 and Org2"
   ./organizations/ccp-generate.sh
 }
 
@@ -470,8 +443,7 @@ function networkDown() {
   # Don't remove the generated artifacts -- note, the ledgers are always removed
   if [ "$MODE" != "restart" ]; then
     # Bring down the network, deleting the volumes
-    # org3_1207
-    ${CONTAINER_CLI} volume rm docker_orderer.example.com docker_peer0.org1.example.com docker_peer0.org2.example.com docker_peer0.org3.example.com
+    ${CONTAINER_CLI} volume rm docker_orderer.example.com docker_peer0.org1.example.com docker_peer0.org2.example.com
     #Cleanup the chaincode containers
     clearContainers
     #Cleanup images
@@ -481,8 +453,6 @@ function networkDown() {
     ## remove fabric ca artifacts
     ${CONTAINER_CLI} run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/org1/msp organizations/fabric-ca/org1/tls-cert.pem organizations/fabric-ca/org1/ca-cert.pem organizations/fabric-ca/org1/IssuerPublicKey organizations/fabric-ca/org1/IssuerRevocationPublicKey organizations/fabric-ca/org1/fabric-ca-server.db'
     ${CONTAINER_CLI} run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/org2/msp organizations/fabric-ca/org2/tls-cert.pem organizations/fabric-ca/org2/ca-cert.pem organizations/fabric-ca/org2/IssuerPublicKey organizations/fabric-ca/org2/IssuerRevocationPublicKey organizations/fabric-ca/org2/fabric-ca-server.db'
-    # org3_1207
-    ${CONTAINER_CLI} run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/org3/msp organizations/fabric-ca/org3/tls-cert.pem organizations/fabric-ca/org3/ca-cert.pem organizations/fabric-ca/org3/IssuerPublicKey organizations/fabric-ca/org3/IssuerRevocationPublicKey organizations/fabric-ca/org3/fabric-ca-server.db'
     ${CONTAINER_CLI} run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/ordererOrg/msp organizations/fabric-ca/ordererOrg/tls-cert.pem organizations/fabric-ca/ordererOrg/ca-cert.pem organizations/fabric-ca/ordererOrg/IssuerPublicKey organizations/fabric-ca/ordererOrg/IssuerRevocationPublicKey organizations/fabric-ca/ordererOrg/fabric-ca-server.db'
     ${CONTAINER_CLI} run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf addOrg3/fabric-ca/org3/msp addOrg3/fabric-ca/org3/tls-cert.pem addOrg3/fabric-ca/org3/ca-cert.pem addOrg3/fabric-ca/org3/IssuerPublicKey addOrg3/fabric-ca/org3/IssuerRevocationPublicKey addOrg3/fabric-ca/org3/fabric-ca-server.db'
     # remove channel and script artifacts

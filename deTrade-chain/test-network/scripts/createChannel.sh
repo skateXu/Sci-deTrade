@@ -54,11 +54,11 @@ createChannel() {
 	while [ $rc -ne 0 -a $COUNTER -lt $MAX_RETRY ] ; do
 		sleep $DELAY
 		set -x
-    . scripts/orderer0.sh ${CHANNEL_NAME}> /dev/null 2>&1
-	. scripts/orderer1.sh ${CHANNEL_NAME}> /dev/null 2>&1
-	. scripts/orderer2.sh ${CHANNEL_NAME}> /dev/null 2>&1
+    . scripts/orderer.sh ${CHANNEL_NAME}> /dev/null 2>&1
     if [ $bft_true -eq 1 ]; then
+      . scripts/orderer2.sh ${CHANNEL_NAME}> /dev/null 2>&1
       . scripts/orderer3.sh ${CHANNEL_NAME}> /dev/null 2>&1
+      . scripts/orderer4.sh ${CHANNEL_NAME}> /dev/null 2>&1
     fi
 		res=$?
 		{ set +x; } 2>/dev/null
@@ -123,15 +123,11 @@ infoln "Joining org1 peer to the channel..."
 joinChannel 1
 infoln "Joining org2 peer to the channel..."
 joinChannel 2
-infoln "Joining org3 peer to the channel..."
-joinChannel 3
 
 ## Set the anchor peers for each org in the channel
 infoln "Setting anchor peer for org1..."
 setAnchorPeer 1
 infoln "Setting anchor peer for org2..."
 setAnchorPeer 2
-infoln "Setting anchor peer for org3..."
-setAnchorPeer 3
 
 successln "Channel '$CHANNEL_NAME' joined"
