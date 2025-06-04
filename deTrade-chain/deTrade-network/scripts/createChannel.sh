@@ -3,11 +3,16 @@
 # imports  
 . scripts/envVar.sh
 
-CHANNEL_NAME="$1"
-DELAY="$2"
-MAX_RETRY="$3"
-VERBOSE="$4"
-BFT="$5"
+Nums_Org=${1}
+Nums_Peer=${2}
+CHANNEL_NAME="$3"
+DELAY="$4"
+MAX_RETRY="$5"
+VERBOSE="$6"
+BFT="$7"
+
+: ${Nums_Org:="20"}
+: ${Nums_Peer:="25"}
 : ${CHANNEL_NAME:="mychannel"}
 : ${DELAY:="3"}
 : ${MAX_RETRY:="5"}
@@ -27,7 +32,7 @@ if [ ! -d "channel-artifacts" ]; then
 fi
 
 createChannelGenesisBlock() {
-  setGlobals 1
+  setGlobals 1 0
 	which configtxgen
 	if [ "$?" -ne 0 ]; then
 		fatalln "configtxgen tool not found."
@@ -57,9 +62,9 @@ createChannel() {
     . scripts/orderer0.sh ${CHANNEL_NAME}> /dev/null 2>&1
 	. scripts/orderer1.sh ${CHANNEL_NAME}> /dev/null 2>&1
 	. scripts/orderer2.sh ${CHANNEL_NAME}> /dev/null 2>&1
-    if [ $bft_true -eq 1 ]; then
-      . scripts/orderer3.sh ${CHANNEL_NAME}> /dev/null 2>&1
-    fi
+    # if [ $bft_true -eq 1 ]; then
+    #   . scripts/orderer3.sh ${CHANNEL_NAME}> /dev/null 2>&1
+    # fi
 		res=$?
 		{ set +x; } 2>/dev/null
 		let rc=$res
@@ -70,24 +75,26 @@ createChannel() {
 }
 
 # joinChannel ORG
+# setGlobals：org ->  setGlobals：org/peer
 joinChannel() {
   ORG=$1
+  PEER=$2
   FABRIC_CFG_PATH=$PWD/../config/
-  setGlobals $ORG
-	local rc=1
-	local COUNTER=1
-	## Sometimes Join takes time, hence retry
-	while [ $rc -ne 0 -a $COUNTER -lt $MAX_RETRY ] ; do
+  setGlobals $ORG $PEER  # 需要修改setGlobals函数以支持指定peer
+  
+  local rc=1
+  local COUNTER=1
+  while [ $rc -ne 0 -a $COUNTER -lt $MAX_RETRY ] ; do
     sleep $DELAY
     set -x
     peer channel join -b $BLOCKFILE >&log.txt
     res=$?
     { set +x; } 2>/dev/null
-		let rc=$res
-		COUNTER=$(expr $COUNTER + 1)
-	done
-	cat log.txt
-	verifyResult $res "After $MAX_RETRY attempts, peer0.org${ORG} has failed to join channel '$CHANNEL_NAME' "
+    let rc=$res
+    COUNTER=$(expr $COUNTER + 1)
+  done
+  cat log.txt
+  verifyResult $res "After $MAX_RETRY attempts, peer${PEER}.org${ORG} has failed to join channel '$CHANNEL_NAME' "
 }
 
 setAnchorPeer() {
@@ -118,39 +125,19 @@ infoln "Creating channel ${CHANNEL_NAME}"
 createChannel $BFT
 successln "Channel '$CHANNEL_NAME' created"
 
-# ## Join all the peers to the channel
-# infoln "Joining org1 peer to the channel..."
-# joinChannel 1
-# infoln "Joining org2 peer to the channel..."
-# joinChannel 2
-# infoln "Joining org3 peer to the channel..."
-# joinChannel 3
-
-# 组织数量
-ORG_COUNT=20
-
-
-# 安装链码到所有组织
-for (( i=1; i<=ORG_COUNT; i++ ))
+# 加入组织
+for (( i=1; i<=$Nums_Org; i++ ))
 do
-  infoln "Joining org$i peer to the channel..."
-  joinChannel $i
+	infoln "Joining org$i peers to the channel..."
+	for (( j=0; j<$Nums_Peer; j++ ))  # 遍历每个组织的所有peer
+	do
+		infoln "Joining org$i peer$j to the channel..."
+		joinChannel $i $j
+	done
+	infoln "Setting anchor peer for org$i..."
+ 	setAnchorPeer $i
 done
 
+# 选择peer0作为锚节点
 
-## Set the anchor peers for each org in the channel
-# infoln "Setting anchor peer for org1..."
-# setAnchorPeer 1
-# infoln "Setting anchor peer for org2..."
-# setAnchorPeer 2
-# infoln "Setting anchor peer for org3..."
-# setAnchorPeer 3
-
-for (( i=1; i<=ORG_COUNT; i++ ))
-do
-  infoln "Setting anchor peer for org$i..."
-  setAnchorPeer $i
-done
-
-
-successln "Channel '$CHANNEL_NAME' joined"
+# successln "Channel '$CHANNEL_NAME' joined"

@@ -4,16 +4,19 @@ function createOrg() {
   local ORG_NAME=$1
   local CA_PORT=$2
   local CA_NAME=$3
+  local NUM_PEERS=$4  # 新增参数：节点数量
 
   infoln "Enrolling the CA admin for ${ORG_NAME}"
   mkdir -p "organizations/peerOrganizations/${ORG_NAME}.example.com/"
 
   export FABRIC_CA_CLIENT_HOME=${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/
 
+  # CA admin注册部分保持不变
   set -x
   fabric-ca-client enroll -u https://admin:adminpw@localhost:${CA_PORT} --caname ${CA_NAME} --tls.certfiles "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem"
   { set +x; } 2>/dev/null
 
+  # config.yaml部分保持不变
   echo "NodeOUs:
   Enable: true
   ClientOUIdentifier:
@@ -29,8 +32,7 @@ function createOrg() {
     Certificate: cacerts/localhost-${CA_PORT}-${CA_NAME}.pem
     OrganizationalUnitIdentifier: orderer" > "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/msp/config.yaml"
 
-
-  # Copy org's CA cert to necessary directories
+  # 复制CA证书部分保持不变
   mkdir -p "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/msp/tlscacerts"
   cp "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem" "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/msp/tlscacerts/ca.crt"
 
@@ -40,54 +42,145 @@ function createOrg() {
   mkdir -p "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/ca"
   cp "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem" "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/ca/ca.${ORG_NAME}.example.com-cert.pem"
 
-  infoln "Registering peer0 for ${ORG_NAME}"
-  set -x
-  fabric-ca-client register --caname ${CA_NAME} --id.name peer0 --id.secret peer0pw --id.type peer --tls.certfiles "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem"
-  { set +x; } 2>/dev/null
+  # 为每个peer节点进行注册和证书生成
+  for ((i=0; i<${NUM_PEERS}; i++))
+  do
+    PEER_NUM=$i
+    infoln "Registering peer${PEER_NUM} for ${ORG_NAME}"
+    set -x
+    fabric-ca-client register --caname ${CA_NAME} --id.name peer${PEER_NUM} --id.secret peer${PEER_NUM}pw --id.type peer --tls.certfiles "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem"
+    { set +x; } 2>/dev/null
 
-  infoln "Registering user for ${ORG_NAME}"
+    infoln "Generating the peer${PEER_NUM} MSP"
+    set -x
+    fabric-ca-client enroll -u https://peer${PEER_NUM}:peer${PEER_NUM}pw@localhost:${CA_PORT} --caname ${CA_NAME} -M "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer${PEER_NUM}.${ORG_NAME}.example.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem"
+    { set +x; } 2>/dev/null
+
+    cp "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer${PEER_NUM}.${ORG_NAME}.example.com/msp/config.yaml"
+
+    infoln "Generating the peer${PEER_NUM}-tls certificates"
+    set -x
+    fabric-ca-client enroll -u https://peer${PEER_NUM}:peer${PEER_NUM}pw@localhost:${CA_PORT} --caname ${CA_NAME} -M "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer${PEER_NUM}.${ORG_NAME}.example.com/tls" --enrollment.profile tls --csr.hosts peer${PEER_NUM}.${ORG_NAME}.example.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem"
+    { set +x; } 2>/dev/null
+
+    # 复制TLS证书
+    cp "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer${PEER_NUM}.${ORG_NAME}.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer${PEER_NUM}.${ORG_NAME}.example.com/tls/ca.crt"
+    cp "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer${PEER_NUM}.${ORG_NAME}.example.com/tls/signcerts/"* "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer${PEER_NUM}.${ORG_NAME}.example.com/tls/server.crt"
+    cp "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer${PEER_NUM}.${ORG_NAME}.example.com/tls/keystore/"* "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer${PEER_NUM}.${ORG_NAME}.example.com/tls/server.key"
+  done
+
+  # 注册用户和管理员部分保持不变
+  infoln "Registering user"
   set -x
   fabric-ca-client register --caname ${CA_NAME} --id.name user1 --id.secret user1pw --id.type client --tls.certfiles "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem"
   { set +x; } 2>/dev/null
 
-  infoln "Registering the org admin for ${ORG_NAME}"
+  infoln "Registering the org admin"
   set -x
   fabric-ca-client register --caname ${CA_NAME} --id.name ${ORG_NAME}admin --id.secret ${ORG_NAME}adminpw --id.type admin --tls.certfiles "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem"
   { set +x; } 2>/dev/null
 
-  infoln "Generating the peer0 MSP for ${ORG_NAME}"
-  set -x
-  fabric-ca-client enroll -u https://peer0:peer0pw@localhost:${CA_PORT} --caname ${CA_NAME} -M "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer0.${ORG_NAME}.example.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem"
-  { set +x; } 2>/dev/null
-
-  cp "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer0.${ORG_NAME}.example.com/msp/config.yaml"
-
-  infoln "Generating the peer0-tls certificates for ${ORG_NAME}, use --csr.hosts to specify Subject Alternative Names"
-  set -x
-  fabric-ca-client enroll -u https://peer0:peer0pw@localhost:${CA_PORT} --caname ${CA_NAME} -M "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer0.${ORG_NAME}.example.com/tls" --enrollment.profile tls --csr.hosts peer0.${ORG_NAME}.example.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem"
-  { set +x; } 2>/dev/null
-
-  # Copy the tls CA cert, server cert, and keystore to peer's tls directory
-  cp "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer0.${ORG_NAME}.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer0.${ORG_NAME}.example.com/tls/ca.crt"
-  cp "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer0.${ORG_NAME}.example.com/tls/signcerts/"* "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer0.${ORG_NAME}.example.com/tls/server.crt"
-  cp "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer0.${ORG_NAME}.example.com/tls/keystore/"* "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer0.${ORG_NAME}.example.com/tls/server.key"
-
-  infoln "Generating the user MSP for ${ORG_NAME}"
+  # 生成用户和管理员的MSP
+  infoln "Generating the user msp"
   set -x
   fabric-ca-client enroll -u https://user1:user1pw@localhost:${CA_PORT} --caname ${CA_NAME} -M "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/users/User1@${ORG_NAME}.example.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem"
   { set +x; } 2>/dev/null
 
   cp "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/users/User1@${ORG_NAME}.example.com/msp/config.yaml"
 
-  infoln "Generating the org admin MSP for ${ORG_NAME}"
+  infoln "Generating the org admin msp"
   set -x
   fabric-ca-client enroll -u https://${ORG_NAME}admin:${ORG_NAME}adminpw@localhost:${CA_PORT} --caname ${CA_NAME} -M "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/users/Admin@${ORG_NAME}.example.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem"
   { set +x; } 2>/dev/null
 
   cp "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/users/Admin@${ORG_NAME}.example.com/msp/config.yaml"
 }
+# function createOrg() {
+#   local ORG_NAME=$1
+#   local CA_PORT=$2
+#   local CA_NAME=$3
+
+#   infoln "Enrolling the CA admin for ${ORG_NAME}"
+#   mkdir -p "organizations/peerOrganizations/${ORG_NAME}.example.com/"
+
+#   export FABRIC_CA_CLIENT_HOME=${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/
+
+#   set -x
+#   fabric-ca-client enroll -u https://admin:adminpw@localhost:${CA_PORT} --caname ${CA_NAME} --tls.certfiles "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem"
+#   { set +x; } 2>/dev/null
+
+#   echo "NodeOUs:
+#   Enable: true
+#   ClientOUIdentifier:
+#     Certificate: cacerts/localhost-${CA_PORT}-${CA_NAME}.pem
+#     OrganizationalUnitIdentifier: client
+#   PeerOUIdentifier:
+#     Certificate: cacerts/localhost-${CA_PORT}-${CA_NAME}.pem
+#     OrganizationalUnitIdentifier: peer
+#   AdminOUIdentifier:
+#     Certificate: cacerts/localhost-${CA_PORT}-${CA_NAME}.pem
+#     OrganizationalUnitIdentifier: admin
+#   OrdererOUIdentifier:
+#     Certificate: cacerts/localhost-${CA_PORT}-${CA_NAME}.pem
+#     OrganizationalUnitIdentifier: orderer" > "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/msp/config.yaml"
 
 
+#   # Copy org's CA cert to necessary directories
+#   mkdir -p "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/msp/tlscacerts"
+#   cp "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem" "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/msp/tlscacerts/ca.crt"
+
+#   mkdir -p "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/tlsca"
+#   cp "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem" "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/tlsca/tlsca.${ORG_NAME}.example.com-cert.pem"
+
+#   mkdir -p "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/ca"
+#   cp "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem" "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/ca/ca.${ORG_NAME}.example.com-cert.pem"
+
+#   infoln "Registering peer1 for ${ORG_NAME}"
+#   set -x
+#   fabric-ca-client register --caname ${CA_NAME} --id.name peer1 --id.secret peer1pw --id.type peer --tls.certfiles "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem"
+#   { set +x; } 2>/dev/null
+
+#   infoln "Registering user for ${ORG_NAME}"
+#   set -x
+#   fabric-ca-client register --caname ${CA_NAME} --id.name user1 --id.secret user1pw --id.type client --tls.certfiles "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem"
+#   { set +x; } 2>/dev/null
+
+#   infoln "Registering the org admin for ${ORG_NAME}"
+#   set -x
+#   fabric-ca-client register --caname ${CA_NAME} --id.name ${ORG_NAME}admin --id.secret ${ORG_NAME}adminpw --id.type admin --tls.certfiles "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem"
+#   { set +x; } 2>/dev/null
+
+#   infoln "Generating the peer1 MSP for ${ORG_NAME}"
+#   set -x
+#   fabric-ca-client enroll -u https://peer1:peer1pw@localhost:${CA_PORT} --caname ${CA_NAME} -M "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer1.${ORG_NAME}.example.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem"
+#   { set +x; } 2>/dev/null
+
+#   cp "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer1.${ORG_NAME}.example.com/msp/config.yaml"
+
+#   infoln "Generating the peer1-tls certificates for ${ORG_NAME}, use --csr.hosts to specify Subject Alternative Names"
+#   set -x
+#   fabric-ca-client enroll -u https://peer1:peer1pw@localhost:${CA_PORT} --caname ${CA_NAME} -M "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer1.${ORG_NAME}.example.com/tls" --enrollment.profile tls --csr.hosts peer1.${ORG_NAME}.example.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem"
+#   { set +x; } 2>/dev/null
+
+#   # Copy the tls CA cert, server cert, and keystore to peer's tls directory
+#   cp "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer1.${ORG_NAME}.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer1.${ORG_NAME}.example.com/tls/ca.crt"
+#   cp "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer1.${ORG_NAME}.example.com/tls/signcerts/"* "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer1.${ORG_NAME}.example.com/tls/server.crt"
+#   cp "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer1.${ORG_NAME}.example.com/tls/keystore/"* "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/peers/peer1.${ORG_NAME}.example.com/tls/server.key"
+
+#   infoln "Generating the user MSP for ${ORG_NAME}"
+#   set -x
+#   fabric-ca-client enroll -u https://user1:user1pw@localhost:${CA_PORT} --caname ${CA_NAME} -M "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/users/User1@${ORG_NAME}.example.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem"
+#   { set +x; } 2>/dev/null
+
+#   cp "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/users/User1@${ORG_NAME}.example.com/msp/config.yaml"
+
+#   infoln "Generating the org admin MSP for ${ORG_NAME}"
+#   set -x
+#   fabric-ca-client enroll -u https://${ORG_NAME}admin:${ORG_NAME}adminpw@localhost:${CA_PORT} --caname ${CA_NAME} -M "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/users/Admin@${ORG_NAME}.example.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/${ORG_NAME}/ca-cert.pem"
+#   { set +x; } 2>/dev/null
+
+#   cp "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/${ORG_NAME}.example.com/users/Admin@${ORG_NAME}.example.com/msp/config.yaml"
+# }
 
 function createOrg1() {
   infoln "Enrolling the CA admin"
@@ -128,7 +221,7 @@ function createOrg1() {
   mkdir -p "${PWD}/organizations/peerOrganizations/org1.example.com/ca"
   cp "${PWD}/organizations/fabric-ca/org1/ca-cert.pem" "${PWD}/organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem"
 
-  infoln "Registering peer0"
+  infoln "Registering peer1"
   set -x
   fabric-ca-client register --caname ca-org1 --id.name peer0 --id.secret peer0pw --id.type peer --tls.certfiles "${PWD}/organizations/fabric-ca/org1/ca-cert.pem"
   { set +x; } 2>/dev/null
@@ -458,7 +551,7 @@ function createOrderer() {
   cp "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer0.orderer.example.com/tls/tlscacerts/"* "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer0.orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem"
 
   mkdir -p "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer1.orderer.example.com/msp/tlscacerts"
-  cp "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls/tlscacerts/"* "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer1.orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem"
+  cp "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer1.orderer.example.com/tls/tlscacerts/"* "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer1.orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem"
 
   mkdir -p "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer2.orderer.example.com/msp/tlscacerts"
   cp "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer2.orderer.example.com/tls/tlscacerts/"* "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer2.orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem"

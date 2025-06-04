@@ -1,0 +1,25 @@
+{
+    "network-configs": {
+        "deTrade-network1": {
+            "name": "deTrade Network1",
+            "profile": "./connection-profile/deTrade-network1.json"
+        },
+        "deTrade-network2": {
+            "name": "deTrade Network2",
+            "profile": "./connection-profile/deTrade-network2.json"
+        },
+        "deTrade-network3": {
+            "name": "deTrade Network3",
+            "profile": "./connection-profile/deTrade-network3.json"
+        },
+        "deTrade-network4": {
+            "name": "deTrade Network4",
+            "profile": "./connection-profile/deTrade-network4.json"
+        },
+        "deTrade-network5": {
+            "name": "deTrade Network5",
+            "profile": "./connection-profile/deTrade-network5.json"
+        }
+    },
+    "license": "Apache-2.0"
+}

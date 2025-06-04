@@ -1,15 +1,41 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
 version: '3.7'
-
-volumes:
-  peer0.org16.example.com:
-
 networks:
   test:
     name: fabric_test
-
-services:
+volumes:
   peer0.org16.example.com:
-    container_name: peer0.org16.example.com
+  peer1.org16.example.com:
+  peer2.org16.example.com:
+  peer3.org16.example.com:
+  peer4.org16.example.com:
+  peer5.org16.example.com:
+  peer6.org16.example.com:
+  peer7.org16.example.com:
+  peer8.org16.example.com:
+  peer9.org16.example.com:
+  peer10.org16.example.com:
+  peer11.org16.example.com:
+  peer12.org16.example.com:
+  peer13.org16.example.com:
+  peer14.org16.example.com:
+  peer15.org16.example.com:
+  peer16.org16.example.com:
+  peer17.org16.example.com:
+  peer18.org16.example.com:
+  peer19.org16.example.com:
+  peer20.org16.example.com:
+  peer21.org16.example.com:
+  peer22.org16.example.com:
+  peer23.org16.example.com:
+  peer24.org16.example.com:
+services: 
+# Peer for org16
+  peer0.org16.example.com:
+    container_name: peer0.${ORG16}.example.com 
     image: hyperledger/fabric-peer:latest
     labels:
       service: hyperledger-fabric
@@ -21,29 +47,940 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      - CORE_PEER_ID=peer0.org16.example.com
-      - CORE_PEER_ADDRESS=peer0.org16.example.com:22051
-      - CORE_PEER_LISTENADDRESS=0.0.0.0:22051
-      - CORE_PEER_CHAINCODEADDRESS=peer0.org16.example.com:22052
-      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:22052
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org16.example.com:22051
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org16.example.com:22051
-      - CORE_PEER_LOCALMSPID=Org16MSP
-      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
-      - CORE_OPERATIONS_LISTENADDRESS=peer0.org16.example.com:22446
       - CORE_METRICS_PROVIDER=prometheus
-      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0org16"}
       - CORE_CHAINCODE_EXECUTETIMEOUT=300s
-
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer0.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer0.${ORG16}.example.com:${PORT16_0}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_0}
+      - CORE_PEER_CHAINCODEADDRESS=peer0.${ORG16}.example.com:${CCPORT16_0}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_0}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.${ORG16}.example.com:${PORT16_0}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.${ORG16}.example.com:${PORT16_0}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.${ORG16}.example.com:${METRICS_PORT16_0}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0.org16"}
+    ports:
+      - "${PORT16_0}:${PORT16_0}"
+      - "${METRICS_PORT16_0}:${METRICS_PORT16_0}"
     volumes:
-      - ../organizations/peerOrganizations/org16.example.com/peers/peer0.org16.example.com:/etc/hyperledger/fabric
-      - peer0.org16.example.com:/var/hyperledger/production
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer0.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer0.${ORG16}.example.com:/var/hyperledger/production
       - ../compose/docker:/etc/docker
-
     working_dir: /root
     command: peer node start
-    ports:
-      - 22051:22051
-      - 22446:22446
     networks:
       - test
+
+  peer1.org16.example.com:
+    container_name: peer1.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer1.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer1.${ORG16}.example.com:${PORT16_1}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_1}
+      - CORE_PEER_CHAINCODEADDRESS=peer1.${ORG16}.example.com:${CCPORT16_1}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_1}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.${ORG16}.example.com:${PORT16_1}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.${ORG16}.example.com:${PORT16_1}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer1.${ORG16}.example.com:${METRICS_PORT16_1}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer1.org16"}
+    ports:
+      - "${PORT16_1}:${PORT16_1}"
+      - "${METRICS_PORT16_1}:${METRICS_PORT16_1}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer1.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer1.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer2.org16.example.com:
+    container_name: peer2.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer2.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer2.${ORG16}.example.com:${PORT16_2}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_2}
+      - CORE_PEER_CHAINCODEADDRESS=peer2.${ORG16}.example.com:${CCPORT16_2}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_2}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer2.${ORG16}.example.com:${PORT16_2}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer2.${ORG16}.example.com:${PORT16_2}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer2.${ORG16}.example.com:${METRICS_PORT16_2}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer2.org16"}
+    ports:
+      - "${PORT16_2}:${PORT16_2}"
+      - "${METRICS_PORT16_2}:${METRICS_PORT16_2}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer2.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer2.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer3.org16.example.com:
+    container_name: peer3.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer3.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer3.${ORG16}.example.com:${PORT16_3}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_3}
+      - CORE_PEER_CHAINCODEADDRESS=peer3.${ORG16}.example.com:${CCPORT16_3}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_3}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer3.${ORG16}.example.com:${PORT16_3}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer3.${ORG16}.example.com:${PORT16_3}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer3.${ORG16}.example.com:${METRICS_PORT16_3}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer3.org16"}
+    ports:
+      - "${PORT16_3}:${PORT16_3}"
+      - "${METRICS_PORT16_3}:${METRICS_PORT16_3}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer3.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer3.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer4.org16.example.com:
+    container_name: peer4.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer4.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer4.${ORG16}.example.com:${PORT16_4}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_4}
+      - CORE_PEER_CHAINCODEADDRESS=peer4.${ORG16}.example.com:${CCPORT16_4}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_4}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer4.${ORG16}.example.com:${PORT16_4}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer4.${ORG16}.example.com:${PORT16_4}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer4.${ORG16}.example.com:${METRICS_PORT16_4}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer4.org16"}
+    ports:
+      - "${PORT16_4}:${PORT16_4}"
+      - "${METRICS_PORT16_4}:${METRICS_PORT16_4}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer4.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer4.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer5.org16.example.com:
+    container_name: peer5.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer5.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer5.${ORG16}.example.com:${PORT16_5}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_5}
+      - CORE_PEER_CHAINCODEADDRESS=peer5.${ORG16}.example.com:${CCPORT16_5}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_5}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer5.${ORG16}.example.com:${PORT16_5}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer5.${ORG16}.example.com:${PORT16_5}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer5.${ORG16}.example.com:${METRICS_PORT16_5}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer5.org16"}
+    ports:
+      - "${PORT16_5}:${PORT16_5}"
+      - "${METRICS_PORT16_5}:${METRICS_PORT16_5}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer5.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer5.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer6.org16.example.com:
+    container_name: peer6.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer6.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer6.${ORG16}.example.com:${PORT16_6}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_6}
+      - CORE_PEER_CHAINCODEADDRESS=peer6.${ORG16}.example.com:${CCPORT16_6}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_6}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer6.${ORG16}.example.com:${PORT16_6}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer6.${ORG16}.example.com:${PORT16_6}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer6.${ORG16}.example.com:${METRICS_PORT16_6}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer6.org16"}
+    ports:
+      - "${PORT16_6}:${PORT16_6}"
+      - "${METRICS_PORT16_6}:${METRICS_PORT16_6}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer6.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer6.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer7.org16.example.com:
+    container_name: peer7.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer7.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer7.${ORG16}.example.com:${PORT16_7}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_7}
+      - CORE_PEER_CHAINCODEADDRESS=peer7.${ORG16}.example.com:${CCPORT16_7}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_7}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer7.${ORG16}.example.com:${PORT16_7}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer7.${ORG16}.example.com:${PORT16_7}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer7.${ORG16}.example.com:${METRICS_PORT16_7}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer7.org16"}
+    ports:
+      - "${PORT16_7}:${PORT16_7}"
+      - "${METRICS_PORT16_7}:${METRICS_PORT16_7}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer7.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer7.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer8.org16.example.com:
+    container_name: peer8.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer8.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer8.${ORG16}.example.com:${PORT16_8}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_8}
+      - CORE_PEER_CHAINCODEADDRESS=peer8.${ORG16}.example.com:${CCPORT16_8}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_8}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer8.${ORG16}.example.com:${PORT16_8}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer8.${ORG16}.example.com:${PORT16_8}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer8.${ORG16}.example.com:${METRICS_PORT16_8}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer8.org16"}
+    ports:
+      - "${PORT16_8}:${PORT16_8}"
+      - "${METRICS_PORT16_8}:${METRICS_PORT16_8}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer8.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer8.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer9.org16.example.com:
+    container_name: peer9.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer9.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer9.${ORG16}.example.com:${PORT16_9}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_9}
+      - CORE_PEER_CHAINCODEADDRESS=peer9.${ORG16}.example.com:${CCPORT16_9}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_9}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer9.${ORG16}.example.com:${PORT16_9}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer9.${ORG16}.example.com:${PORT16_9}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer9.${ORG16}.example.com:${METRICS_PORT16_9}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer9.org16"}
+    ports:
+      - "${PORT16_9}:${PORT16_9}"
+      - "${METRICS_PORT16_9}:${METRICS_PORT16_9}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer9.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer9.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer10.org16.example.com:
+    container_name: peer10.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer10.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer10.${ORG16}.example.com:${PORT16_10}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_10}
+      - CORE_PEER_CHAINCODEADDRESS=peer10.${ORG16}.example.com:${CCPORT16_10}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_10}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer10.${ORG16}.example.com:${PORT16_10}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer10.${ORG16}.example.com:${PORT16_10}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer10.${ORG16}.example.com:${METRICS_PORT16_10}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer10.org16"}
+    ports:
+      - "${PORT16_10}:${PORT16_10}"
+      - "${METRICS_PORT16_10}:${METRICS_PORT16_10}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer10.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer10.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer11.org16.example.com:
+    container_name: peer11.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer11.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer11.${ORG16}.example.com:${PORT16_11}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_11}
+      - CORE_PEER_CHAINCODEADDRESS=peer11.${ORG16}.example.com:${CCPORT16_11}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_11}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer11.${ORG16}.example.com:${PORT16_11}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer11.${ORG16}.example.com:${PORT16_11}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer11.${ORG16}.example.com:${METRICS_PORT16_11}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer11.org16"}
+    ports:
+      - "${PORT16_11}:${PORT16_11}"
+      - "${METRICS_PORT16_11}:${METRICS_PORT16_11}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer11.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer11.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer12.org16.example.com:
+    container_name: peer12.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer12.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer12.${ORG16}.example.com:${PORT16_12}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_12}
+      - CORE_PEER_CHAINCODEADDRESS=peer12.${ORG16}.example.com:${CCPORT16_12}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_12}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer12.${ORG16}.example.com:${PORT16_12}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer12.${ORG16}.example.com:${PORT16_12}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer12.${ORG16}.example.com:${METRICS_PORT16_12}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer12.org16"}
+    ports:
+      - "${PORT16_12}:${PORT16_12}"
+      - "${METRICS_PORT16_12}:${METRICS_PORT16_12}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer12.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer12.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer13.org16.example.com:
+    container_name: peer13.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer13.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer13.${ORG16}.example.com:${PORT16_13}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_13}
+      - CORE_PEER_CHAINCODEADDRESS=peer13.${ORG16}.example.com:${CCPORT16_13}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_13}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer13.${ORG16}.example.com:${PORT16_13}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer13.${ORG16}.example.com:${PORT16_13}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer13.${ORG16}.example.com:${METRICS_PORT16_13}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer13.org16"}
+    ports:
+      - "${PORT16_13}:${PORT16_13}"
+      - "${METRICS_PORT16_13}:${METRICS_PORT16_13}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer13.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer13.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer14.org16.example.com:
+    container_name: peer14.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer14.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer14.${ORG16}.example.com:${PORT16_14}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_14}
+      - CORE_PEER_CHAINCODEADDRESS=peer14.${ORG16}.example.com:${CCPORT16_14}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_14}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer14.${ORG16}.example.com:${PORT16_14}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer14.${ORG16}.example.com:${PORT16_14}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer14.${ORG16}.example.com:${METRICS_PORT16_14}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer14.org16"}
+    ports:
+      - "${PORT16_14}:${PORT16_14}"
+      - "${METRICS_PORT16_14}:${METRICS_PORT16_14}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer14.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer14.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer15.org16.example.com:
+    container_name: peer15.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer15.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer15.${ORG16}.example.com:${PORT16_15}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_15}
+      - CORE_PEER_CHAINCODEADDRESS=peer15.${ORG16}.example.com:${CCPORT16_15}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_15}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer15.${ORG16}.example.com:${PORT16_15}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer15.${ORG16}.example.com:${PORT16_15}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer15.${ORG16}.example.com:${METRICS_PORT16_15}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer15.org16"}
+    ports:
+      - "${PORT16_15}:${PORT16_15}"
+      - "${METRICS_PORT16_15}:${METRICS_PORT16_15}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer15.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer15.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer16.org16.example.com:
+    container_name: peer16.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer16.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer16.${ORG16}.example.com:${PORT16_16}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_16}
+      - CORE_PEER_CHAINCODEADDRESS=peer16.${ORG16}.example.com:${CCPORT16_16}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_16}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer16.${ORG16}.example.com:${PORT16_16}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer16.${ORG16}.example.com:${PORT16_16}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer16.${ORG16}.example.com:${METRICS_PORT16_16}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer16.org16"}
+    ports:
+      - "${PORT16_16}:${PORT16_16}"
+      - "${METRICS_PORT16_16}:${METRICS_PORT16_16}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer16.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer16.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer17.org16.example.com:
+    container_name: peer17.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer17.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer17.${ORG16}.example.com:${PORT16_17}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_17}
+      - CORE_PEER_CHAINCODEADDRESS=peer17.${ORG16}.example.com:${CCPORT16_17}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_17}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer17.${ORG16}.example.com:${PORT16_17}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer17.${ORG16}.example.com:${PORT16_17}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer17.${ORG16}.example.com:${METRICS_PORT16_17}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer17.org16"}
+    ports:
+      - "${PORT16_17}:${PORT16_17}"
+      - "${METRICS_PORT16_17}:${METRICS_PORT16_17}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer17.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer17.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer18.org16.example.com:
+    container_name: peer18.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer18.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer18.${ORG16}.example.com:${PORT16_18}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_18}
+      - CORE_PEER_CHAINCODEADDRESS=peer18.${ORG16}.example.com:${CCPORT16_18}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_18}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer18.${ORG16}.example.com:${PORT16_18}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer18.${ORG16}.example.com:${PORT16_18}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer18.${ORG16}.example.com:${METRICS_PORT16_18}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer18.org16"}
+    ports:
+      - "${PORT16_18}:${PORT16_18}"
+      - "${METRICS_PORT16_18}:${METRICS_PORT16_18}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer18.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer18.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer19.org16.example.com:
+    container_name: peer19.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer19.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer19.${ORG16}.example.com:${PORT16_19}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_19}
+      - CORE_PEER_CHAINCODEADDRESS=peer19.${ORG16}.example.com:${CCPORT16_19}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_19}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer19.${ORG16}.example.com:${PORT16_19}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer19.${ORG16}.example.com:${PORT16_19}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer19.${ORG16}.example.com:${METRICS_PORT16_19}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer19.org16"}
+    ports:
+      - "${PORT16_19}:${PORT16_19}"
+      - "${METRICS_PORT16_19}:${METRICS_PORT16_19}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer19.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer19.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer20.org16.example.com:
+    container_name: peer20.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer20.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer20.${ORG16}.example.com:${PORT16_20}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_20}
+      - CORE_PEER_CHAINCODEADDRESS=peer20.${ORG16}.example.com:${CCPORT16_20}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_20}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer20.${ORG16}.example.com:${PORT16_20}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer20.${ORG16}.example.com:${PORT16_20}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer20.${ORG16}.example.com:${METRICS_PORT16_20}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer20.org16"}
+    ports:
+      - "${PORT16_20}:${PORT16_20}"
+      - "${METRICS_PORT16_20}:${METRICS_PORT16_20}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer20.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer20.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer21.org16.example.com:
+    container_name: peer21.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer21.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer21.${ORG16}.example.com:${PORT16_21}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_21}
+      - CORE_PEER_CHAINCODEADDRESS=peer21.${ORG16}.example.com:${CCPORT16_21}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_21}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer21.${ORG16}.example.com:${PORT16_21}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer21.${ORG16}.example.com:${PORT16_21}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer21.${ORG16}.example.com:${METRICS_PORT16_21}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer21.org16"}
+    ports:
+      - "${PORT16_21}:${PORT16_21}"
+      - "${METRICS_PORT16_21}:${METRICS_PORT16_21}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer21.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer21.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer22.org16.example.com:
+    container_name: peer22.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer22.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer22.${ORG16}.example.com:${PORT16_22}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_22}
+      - CORE_PEER_CHAINCODEADDRESS=peer22.${ORG16}.example.com:${CCPORT16_22}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_22}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer22.${ORG16}.example.com:${PORT16_22}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer22.${ORG16}.example.com:${PORT16_22}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer22.${ORG16}.example.com:${METRICS_PORT16_22}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer22.org16"}
+    ports:
+      - "${PORT16_22}:${PORT16_22}"
+      - "${METRICS_PORT16_22}:${METRICS_PORT16_22}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer22.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer22.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer23.org16.example.com:
+    container_name: peer23.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer23.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer23.${ORG16}.example.com:${PORT16_23}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_23}
+      - CORE_PEER_CHAINCODEADDRESS=peer23.${ORG16}.example.com:${CCPORT16_23}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_23}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer23.${ORG16}.example.com:${PORT16_23}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer23.${ORG16}.example.com:${PORT16_23}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer23.${ORG16}.example.com:${METRICS_PORT16_23}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer23.org16"}
+    ports:
+      - "${PORT16_23}:${PORT16_23}"
+      - "${METRICS_PORT16_23}:${METRICS_PORT16_23}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer23.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer23.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+
+  peer24.org16.example.com:
+    container_name: peer24.${ORG16}.example.com 
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_ID=peer24.${ORG16}.example.com
+      - CORE_PEER_ADDRESS=peer24.${ORG16}.example.com:${PORT16_24}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PORT16_24}
+      - CORE_PEER_CHAINCODEADDRESS=peer24.${ORG16}.example.com:${CCPORT16_24}
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${CCPORT16_24}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer24.${ORG16}.example.com:${PORT16_24}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer24.${ORG16}.example.com:${PORT16_24}
+      - CORE_PEER_LOCALMSPID=${ORG16_MSP}
+      - CORE_OPERATIONS_LISTENADDRESS=peer24.${ORG16}.example.com:${METRICS_PORT16_24}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer24.org16"}
+    ports:
+      - "${PORT16_24}:${PORT16_24}"
+      - "${METRICS_PORT16_24}:${METRICS_PORT16_24}"
+    volumes:
+      - ../organizations/peerOrganizations/${ORG16}.example.com/peers/peer24.${ORG16}.example.com:/etc/hyperledger/fabric
+      - peer24.${ORG16}.example.com:/var/hyperledger/production
+      - ../compose/docker:/etc/docker
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test
+

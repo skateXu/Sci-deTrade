@@ -5,13 +5,13 @@ test:
       type: local
       number: 1
     rounds:
-      - label: init
-        description: init
+      - label: test
+        description: test
         txDuration: 10  # 每轮测试持续 10 秒
         rateControl: 
           type: fixed-rate # 负载控制类型为固定负载
           opts:
-            tps : 10 # 每秒 2 个事务（即负载为 2 TPS）
+            tps : 10 
         workload:
           module: workload/test.js
           arguments:

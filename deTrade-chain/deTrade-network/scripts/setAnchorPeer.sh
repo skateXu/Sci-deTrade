@@ -14,32 +14,21 @@
 TEST_NETWORK_HOME=${TEST_NETWORK_HOME:-${PWD}}
 . ${TEST_NETWORK_HOME}/scripts/configUpdate.sh
 
+
 # Port mappings for 20 organizations
 declare -A PEER_PORTS=(
   [1]=7051 [2]=8051 [3]=9051 [4]=10051 [5]=11051 [6]=12051 [7]=13051 [8]=14051 [9]=15051 [10]=16051
   [11]=17051 [12]=18051 [13]=19051 [14]=20051 [15]=21051 [16]=22051 [17]=23051 [18]=24051 [19]=25051 [20]=26051
 )
 
-
+# NOTE: 修改fetchChannelConfig输入参数为peer0
 # NOTE: This requires jq and configtxlator for execution.
 createAnchorPeerUpdate() {
   infoln "Fetching channel config for channel $CHANNEL_NAME"
-  fetchChannelConfig $ORG $CHANNEL_NAME ${TEST_NETWORK_HOME}/channel-artifacts/${CORE_PEER_LOCALMSPID}config.json
+  fetchChannelConfig $ORG  $CHANNEL_NAME ${TEST_NETWORK_HOME}/channel-artifacts/${CORE_PEER_LOCALMSPID}config.json
 
   infoln "Generating anchor peer update transaction for Org${ORG} on channel $CHANNEL_NAME"
 
-  # if [ $ORG -eq 1 ]; then
-  #   HOST="peer0.org1.example.com"
-  #   PORT=7051
-  # elif [ $ORG -eq 2 ]; then
-  #   HOST="peer0.org2.example.com"
-  #   PORT=8051
-  # elif [ $ORG -eq 3 ]; then
-  #   HOST="peer0.org3.example.com"
-  #   PORT=9051
-  # else
-  #   errorln "Org${ORG} unknown"
-  # fi
   if [  $ORG  -ge 1 ] && [  $ORG -le 20 ]; then
     HOST="peer0.org$ORG.example.com"
     PORT=${PEER_PORTS[$ORG]}
@@ -72,8 +61,6 @@ updateAnchorPeer() {
 ORG=$1
 CHANNEL_NAME=$2
 
-setGlobals $ORG
-
+setGlobals $ORG 0
 createAnchorPeerUpdate 
-
 updateAnchorPeer 

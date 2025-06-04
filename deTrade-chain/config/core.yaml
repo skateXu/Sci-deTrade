@@ -44,7 +44,7 @@ peer:
     # Whether the Peer should programmatically determine its address
     # This case is useful for docker containers.
     # When set to true, will override peer address.
-    addressAutoDetect: false
+    addressAutoDetect: true
 
     # Settings for the Peer's gateway server.
     gateway:

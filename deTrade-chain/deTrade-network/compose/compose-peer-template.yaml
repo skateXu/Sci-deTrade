@@ -1,0 +1,25 @@
+version: '3.7'
+
+networks:
+  test:
+    name: fabric_test
+
+services:
+  peer-defaults:
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/docker/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_METRICS_PROVIDER=prometheus
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+    working_dir: /root
+    command: peer node start
+    networks:
+      - test

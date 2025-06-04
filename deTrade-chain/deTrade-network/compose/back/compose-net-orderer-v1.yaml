@@ -1,0 +1,75 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
+version: '3.7'
+networks:
+  test:
+    name: fabric_test
+
+volumes:
+  orderer0.orderer.example.com:
+  orderer1.orderer.example.com:
+  orderer2.orderer.example.com:
+
+services: 
+  # Peer for orderer
+  orderer0.orderer.example.com:
+    extends:
+      file: compose-orderer-template.yaml
+      service: orderer-defaults
+    container_name: ${ORDERER0}.${ORDERER}.example.com
+    image: hyperledger/fabric-orderer:latest
+    environment:
+      - ORDERER_GENERAL_LOCALMSPID=${ORDERER_MSP}
+      - ORDERER_GENERAL_LISTENPORT=${ORDERER0_PORT}
+      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:${ORDERER0_OPERATIONS_PORT}
+      - ORDERER_OPERATIONS_LISTENADDRESS=${ORDERER0}.${ORDERER}.example.com:${ORDERER0_ADMIN_PORT}
+    volumes:
+        - ../organizations/ordererOrganizations/example.com/orderers/${ORDERER0}.${ORDERER}.example.com/msp:/var/hyperledger/orderer/msp
+        - ../organizations/ordererOrganizations/example.com/orderers/${ORDERER0}.${ORDERER}.example.com/tls/:/var/hyperledger/orderer/tls
+        - ${ORDERER0}.${ORDERER}.example.com:/var/hyperledger/production/orderer
+    ports:
+      - ${ORDERER0_PORT}:${ORDERER0_PORT}
+      - ${ORDERER0_OPERATIONS_PORT}:${ORDERER0_OPERATIONS_PORT}
+      - ${ORDERER0_ADMIN_PORT}:${ORDERER0_ADMIN_PORT}
+
+  orderer1.orderer.example.com:
+    extends:
+      file: compose-orderer-template.yaml
+      service: orderer-defaults
+    container_name: ${ORDERER1}.${ORDERER}.example.com
+    image: hyperledger/fabric-orderer:latest
+    environment:
+      - ORDERER_GENERAL_LOCALMSPID=${ORDERER_MSP}
+      - ORDERER_GENERAL_LISTENPORT=${ORDERER1_PORT}
+      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:${ORDERER1_OPERATIONS_PORT}
+      - ORDERER_OPERATIONS_LISTENADDRESS=${ORDERER1}.${ORDERER}.example.com:${ORDERER1_ADMIN_PORT}
+    volumes:
+        - ../organizations/ordererOrganizations/example.com/orderers/${ORDERER1}.${ORDERER}.example.com/msp:/var/hyperledger/orderer/msp
+        - ../organizations/ordererOrganizations/example.com/orderers/${ORDERER1}.${ORDERER}.example.com/tls/:/var/hyperledger/orderer/tls
+        - ${ORDERER1}.${ORDERER}.example.com:/var/hyperledger/production/orderer
+    ports:
+      - ${ORDERER1_PORT}:${ORDERER1_PORT}
+      - ${ORDERER1_OPERATIONS_PORT}:${ORDERER1_OPERATIONS_PORT}
+      - ${ORDERER1_ADMIN_PORT}:${ORDERER1_ADMIN_PORT}
+
+  orderer2.orderer.example.com:
+    extends:
+      file: compose-orderer-template.yaml
+      service: orderer-defaults
+    container_name: ${ORDERER2}.${ORDERER}.example.com
+    image: hyperledger/fabric-orderer:latest
+    environment:
+      - ORDERER_GENERAL_LOCALMSPID=${ORDERER_MSP}
+      - ORDERER_GENERAL_LISTENPORT=${ORDERER2_PORT}
+      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:${ORDERER2_OPERATIONS_PORT}
+      - ORDERER_OPERATIONS_LISTENADDRESS=${ORDERER2}.${ORDERER}.example.com:${ORDERER2_ADMIN_PORT}
+    volumes:
+        - ../organizations/ordererOrganizations/example.com/orderers/${ORDERER2}.${ORDERER}.example.com/msp:/var/hyperledger/orderer/msp
+        - ../organizations/ordererOrganizations/example.com/orderers/${ORDERER2}.${ORDERER}.example.com/tls/:/var/hyperledger/orderer/tls
+        - ${ORDERER2}.${ORDERER}.example.com:/var/hyperledger/production/orderer
+    ports:
+      - ${ORDERER2_PORT}:${ORDERER2_PORT}
+      - ${ORDERER2_OPERATIONS_PORT}:${ORDERER2_OPERATIONS_PORT}
+      - ${ORDERER2_ADMIN_PORT}:${ORDERER2_ADMIN_PORT}

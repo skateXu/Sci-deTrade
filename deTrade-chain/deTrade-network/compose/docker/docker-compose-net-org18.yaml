@@ -1,0 +1,278 @@
+version: '3.7'
+
+services:
+  peer0.org18.example.com:
+    container_name: peer0.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer1.org18.example.com:
+    container_name: peer1.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer2.org18.example.com:
+    container_name: peer2.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer3.org18.example.com:
+    container_name: peer3.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer4.org18.example.com:
+    container_name: peer4.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer5.org18.example.com:
+    container_name: peer5.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer6.org18.example.com:
+    container_name: peer6.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer7.org18.example.com:
+    container_name: peer7.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer8.org18.example.com:
+    container_name: peer8.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer9.org18.example.com:
+    container_name: peer9.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer10.org18.example.com:
+    container_name: peer10.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer11.org18.example.com:
+    container_name: peer11.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer12.org18.example.com:
+    container_name: peer12.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer13.org18.example.com:
+    container_name: peer13.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer14.org18.example.com:
+    container_name: peer14.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer15.org18.example.com:
+    container_name: peer15.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer16.org18.example.com:
+    container_name: peer16.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer17.org18.example.com:
+    container_name: peer17.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer18.org18.example.com:
+    container_name: peer18.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer19.org18.example.com:
+    container_name: peer19.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer20.org18.example.com:
+    container_name: peer20.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer21.org18.example.com:
+    container_name: peer21.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer22.org18.example.com:
+    container_name: peer22.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer23.org18.example.com:
+    container_name: peer23.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock
+  peer24.org18.example.com:
+    container_name: peer24.org18.example.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./docker/peercfg:/etc/hyperledger/peercfg
+      - ${DOCKER_SOCK}:/host/var/run/docker.sock

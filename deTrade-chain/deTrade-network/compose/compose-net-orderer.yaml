@@ -43,7 +43,7 @@ services:
       - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
       - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
       - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7053
-      - ORDERER_OPERATIONS_LISTENADDRESS=orderer0.orderer.example.com:9441
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer0.orderer.example.com:6441  
       - ORDERER_METRICS_PROVIDER=prometheus
 
     working_dir: /root
@@ -56,7 +56,7 @@ services:
     ports:
       - 7050:7050
       - 7053:7053
-      - 9441:9441
+      - 6441:6441
     networks:
       - test
 
@@ -87,7 +87,7 @@ services:
       - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
       - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
       - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7055
-      - ORDERER_OPERATIONS_LISTENADDRESS=orderer1.orderer.example.com:9442
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer1.orderer.example.com:6442
       - ORDERER_METRICS_PROVIDER=prometheus
       # - GODEBUG=netdns=go   添加环境变量
     working_dir: /root
@@ -100,7 +100,7 @@ services:
     ports:
       - 7150:7050
       - 7055:7055
-      - 9442:9442
+      - 6442:6442
     networks:
       - test
 
@@ -131,7 +131,7 @@ services:
       - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
       - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
       - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7057
-      - ORDERER_OPERATIONS_LISTENADDRESS=orderer2.orderer.example.com:9443
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer2.orderer.example.com:6443
       - ORDERER_METRICS_PROVIDER=prometheus
 
     working_dir: /root
@@ -144,6 +144,6 @@ services:
     ports:
       - 7250:7050
       - 7057:7057
-      - 9443:9443
+      - 6443:6443
     networks:
       - test

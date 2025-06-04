@@ -60,6 +60,7 @@ updateAnchorPeer() {
 ORG=$1
 CHANNEL_NAME=$2
 
+source scripts/envVar.sh
 setGlobals $ORG
 
 createAnchorPeerUpdate 

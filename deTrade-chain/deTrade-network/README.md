@@ -1,6 +1,8 @@
 # Running the deTrade network
 
-You can use the `./start-network.sh` script to stand up the deTrade network. The deTrade network has three peer organizations with one peer each and a single node raft ordering service.
+You can use the ` ./temp.sh ` script to set up the deTrade network. We support networks with up to 20 organizations, each having up to 25 peers.
+
+The deTrade network has a single node raft ordering service.
 
 First ,  navigate to the folder :
 
@@ -11,25 +13,45 @@ cd /relpath/deTrade-network
 Unlock the script :
 
 ```sh
-sudo chmod +x ./start-network.sh
-sudo chmod +x ./stop-network.sh
+sudo chmod +x ./temp.sh
+sudo chmod +x ./tempstop.sh
 ```
+
+If this is the first time starting up, you need to generate cryptographic materials for organizations and members. You should edit the script `./temp.sh` to specify the number of organizations and peers in advance, which are originally set to 5 and 20, respectively.
+
+Then you need to check config/configtx.yaml to set the information for each organization, which are commented out.
 
 Start the deTrade network :
 
-```bash
-./start-network.sh
+```sh
+./temp.sh -n
 ```
-
-This script will automatically start the network , create channel "mychannel" and deploy the trade chaincode "datatrading".
-
-Stop the deTrade network :
+If you already have the materials, you can skip the cryptographic setup step:
 
 ```sh
-./stop-network.sh
+./temp.sh 
+```
+This script will automatically start the network , create channel "mychannel" and deploy the trade chaincode "datatrading".
+
+Stop the deTrade network if you wanna delete the  materials:
+
+```sh
+./tempstop.sh -n
+```
+or keep the materials:
+```sh
+./tempstop.sh
+```
+
+Clear the old materials if there are any corresponding problems.
+```
+rm -rf channel-artifacts/*
 ```
 
 Before you can deploy the deTrade network, you need to follow the instructions to [Install the Samples, Binaries and Docker Images](https://hyperledger-fabric.readthedocs.io/en/latest/install.html) in the Hyperledger Fabric documentation.
+
+
+
 
 ## Using the Peer commands
 

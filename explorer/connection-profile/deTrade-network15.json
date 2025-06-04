@@ -1,0 +1,202 @@
+{
+    "name": "deTrade-network",
+    "version": "1.0.0",
+    "client": {
+        "tlsEnable": true,
+        "adminCredential": {
+            "id": "exploreradmin",
+            "password": "exploreradminpw"
+        },
+        "enableAuthentication": true,
+        "organization": "Org15MSP",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300"
+                },
+                "orderer": "300"
+            }
+        }
+    },
+    "channels": {
+        "mychannel": {   
+            "peers": {
+                "peer0.org15.example.com":{},
+                "peer1.org15.example.com":{},
+                "peer2.org15.example.com":{},
+                "peer3.org15.example.com":{},
+                "peer4.org15.example.com":{},
+                "peer5.org15.example.com":{},
+                "peer6.org15.example.com":{},
+                "peer7.org15.example.com":{},
+                "peer8.org15.example.com":{},
+                "peer9.org15.example.com":{},
+                "peer10.org15.example.com":{},
+                "peer11.org15.example.com":{},
+                "peer12.org15.example.com":{},
+                "peer13.org15.example.com":{},
+                "peer14.org15.example.com":{},
+                "peer15.org15.example.com":{},
+                "peer16.org15.example.com":{},
+                "peer17.org15.example.com":{},
+                "peer18.org15.example.com":{},
+                "peer19.org15.example.com":{}
+            }
+        }
+    },
+    "organizations": {
+        "Org15MSP": {
+            "mspid": "Org15MSP",
+            "adminPrivateKey": {
+                "path": "/tmp/crypto/peerOrganizations/org15.example.com/users/Admin@org15.example.com/msp/keystore/priv_sk"   
+            },
+            "peers": [
+                "peer0.org15.example.com",
+                "peer1.org15.example.com",
+                "peer2.org15.example.com",
+                "peer3.org15.example.com",
+                "peer4.org15.example.com",
+                "peer5.org15.example.com",
+                "peer6.org15.example.com",
+                "peer7.org15.example.com",
+                "peer8.org15.example.com",
+                "peer9.org15.example.com",
+                "peer10.org15.example.com",
+                "peer11.org15.example.com",
+                "peer12.org15.example.com",
+                "peer13.org15.example.com",
+                "peer14.org15.example.com",
+                "peer15.org15.example.com",
+                "peer16.org15.example.com",
+                "peer17.org15.example.com",
+                "peer18.org15.example.com",
+                "peer19.org15.example.com"
+            ],
+            "signedCert": {
+                "path": "/tmp/crypto/peerOrganizations/org15.example.com/users/Admin@org15.example.com/msp/signcerts/cert.pem"   
+            }
+        }
+    },
+    "peers": {
+        "peer0.org15.example.com": {
+            "tlsCACerts": {
+                "path": "/tmp/crypto/peerOrganizations/org15.example.com/peers/peer0.org15.example.com/tls/ca.crt"
+            },
+            "url": "grpcs://peer0.org15.example.com:21051"
+        },
+        "peer1.org15.example.com": {
+            "tlsCACerts": {
+                "path": "/tmp/crypto/peerOrganizations/org15.example.com/peers/peer1.org15.example.com/tls/ca.crt"
+            },
+            "url": "grpcs://peer1.org15.example.com:21151"
+        },
+        "peer2.org15.example.com": {
+            "tlsCACerts": {
+                "path": "/tmp/crypto/peerOrganizations/org15.example.com/peers/peer2.org15.example.com/tls/ca.crt"
+            },
+            "url": "grpcs://peer2.org15.example.com:21251"
+        },
+        "peer3.org15.example.com": {
+            "tlsCACerts": {
+                "path": "/tmp/crypto/peerOrganizations/org15.example.com/peers/peer3.org15.example.com/tls/ca.crt"
+            },
+            "url": "grpcs://peer3.org15.example.com:21351"
+        },
+        "peer4.org15.example.com": {
+            "tlsCACerts": {
+                "path": "/tmp/crypto/peerOrganizations/org15.example.com/peers/peer4.org15.example.com/tls/ca.crt"
+            },
+            "url": "grpcs://peer4.org15.example.com:21451"
+        },
+        "peer5.org15.example.com": {
+            "tlsCACerts": {
+                "path": "/tmp/crypto/peerOrganizations/org15.example.com/peers/peer5.org15.example.com/tls/ca.crt"
+            },
+            "url": "grpcs://peer5.org15.example.com:21551"
+        },
+        "peer6.org15.example.com": {
+            "tlsCACerts": {
+                "path": "/tmp/crypto/peerOrganizations/org15.example.com/peers/peer6.org15.example.com/tls/ca.crt"
+            },
+            "url": "grpcs://peer6.org15.example.com:21651"
+        },
+        "peer7.org15.example.com": {
+            "tlsCACerts": {
+                "path": "/tmp/crypto/peerOrganizations/org15.example.com/peers/peer7.org15.example.com/tls/ca.crt"
+            },
+            "url": "grpcs://peer7.org15.example.com:21751"
+        },
+        "peer8.org15.example.com": {
+            "tlsCACerts": {
+                "path": "/tmp/crypto/peerOrganizations/org15.example.com/peers/peer8.org15.example.com/tls/ca.crt"
+            },
+            "url": "grpcs://peer8.org15.example.com:21851"
+        },
+        "peer9.org15.example.com": {
+            "tlsCACerts": {
+                "path": "/tmp/crypto/peerOrganizations/org15.example.com/peers/peer9.org15.example.com/tls/ca.crt"
+            },
+            "url": "grpcs://peer9.org15.example.com:21951"
+        },
+        "peer10.org15.example.com": {
+            "tlsCACerts": {
+                "path": "/tmp/crypto/peerOrganizations/org15.example.com/peers/peer10.org15.example.com/tls/ca.crt"
+            },
+            "url": "grpcs://peer10.org15.example.com:21061"
+        },
+        "peer11.org15.example.com": {
+            "tlsCACerts": {
+                "path": "/tmp/crypto/peerOrganizations/org15.example.com/peers/peer11.org15.example.com/tls/ca.crt"
+            },
+            "url": "grpcs://peer11.org15.example.com:21161"
+        },
+        "peer12.org15.example.com": {
+            "tlsCACerts": {
+                "path": "/tmp/crypto/peerOrganizations/org15.example.com/peers/peer12.org15.example.com/tls/ca.crt"
+            },
+            "url": "grpcs://peer12.org15.example.com:21261"
+        },
+        "peer13.org15.example.com": {
+            "tlsCACerts": {
+                "path": "/tmp/crypto/peerOrganizations/org15.example.com/peers/peer13.org15.example.com/tls/ca.crt"
+            },
+            "url": "grpcs://peer13.org15.example.com:21361"
+        },
+        "peer14.org15.example.com": {
+            "tlsCACerts": {
+                "path": "/tmp/crypto/peerOrganizations/org15.example.com/peers/peer14.org15.example.com/tls/ca.crt"
+            },
+            "url": "grpcs://peer14.org15.example.com:21461"
+        },
+        "peer15.org15.example.com": {
+            "tlsCACerts": {
+                "path": "/tmp/crypto/peerOrganizations/org15.example.com/peers/peer15.org15.example.com/tls/ca.crt"
+            },
+            "url": "grpcs://peer15.org15.example.com:21561"
+        },
+        "peer16.org15.example.com": {
+            "tlsCACerts": {
+                "path": "/tmp/crypto/peerOrganizations/org15.example.com/peers/peer16.org15.example.com/tls/ca.crt"
+            },
+            "url": "grpcs://peer16.org15.example.com:21661"
+        },
+        "peer17.org15.example.com": {
+            "tlsCACerts": {
+                "path": "/tmp/crypto/peerOrganizations/org15.example.com/peers/peer17.org15.example.com/tls/ca.crt"
+            },
+            "url": "grpcs://peer17.org15.example.com:21761"
+        },
+        "peer18.org15.example.com": {
+            "tlsCACerts": {
+                "path": "/tmp/crypto/peerOrganizations/org15.example.com/peers/peer18.org15.example.com/tls/ca.crt"
+            },
+            "url": "grpcs://peer18.org15.example.com:21861"
+        },
+        "peer19.org15.example.com": {
+            "tlsCACerts": {
+                "path": "/tmp/crypto/peerOrganizations/org15.example.com/peers/peer19.org15.example.com/tls/ca.crt"
+            },
+            "url": "grpcs://peer19.org15.example.com:21961"
+        }
+    }
+}

@@ -8,9 +8,29 @@ export VERBOSE=false
 pushd ${ROOTDIR} >/dev/null
 trap "popd > /dev/null" EXIT
 
+# Get docker sock path from environment variable
+SOCK="${DOCKER_HOST:-/var/run/docker.sock}"
+DOCKER_SOCK="${SOCK##unix://}"
+
+
 . scripts/utils.sh
 
-# 结束网络
+# set the Global variable
+CHANNEL_NAME="mychannel"
+CRYPTO_MODE="Certificate Authorities"
+CC_NAME="datatrading"
+CC_SRC_PATH="../datatrading-chaincode/chaincode-go/"
+CC_SRC_LANGUAGE="go"
+# CC_VERSION = "1.0.1"
+# CC_SEQUENCE = "auto"
+# CC_INIT_FCN = "NA"
+# CC_END_POLICY = "NA"
+# CC_COLL_CONFIG = "NA"
+# DATABASE = "leveldb"
+# MAX_RETRY = 5
+# CLI_DELAY = 3
+
+# Stop the network
 # Obtain CONTAINER_IDS and remove them
 # This function is called when you bring a network down
 function clearContainers() {
@@ -30,38 +50,24 @@ function removeUnwantedImages() {
 
 # Tear down running network
 function networkDown() {
-    local temp_compose=compose-net.yaml
-    #   COMPOSE_FILE_BASE=compose-bft-test-net.yaml
-    # COMPOSE_BASE_FILES="-f compose/compose-net.yaml -f compose/docker/docker-compose-net.yaml"
-    COMPOSE_BASE_FILES="-f compose/compose-net-org1.yaml \
-                    -f compose/compose-net-org2.yaml \
-                    -f compose/compose-net-org3.yaml \
-                    -f compose/compose-net-org4.yaml \
-                    -f compose/compose-net-org5.yaml \
-                    -f compose/compose-net-org6.yaml \
-                    -f compose/compose-net-org7.yaml \
-                    -f compose/compose-net-org8.yaml \
-                    -f compose/compose-net-org9.yaml \
-                    -f compose/compose-net-org10.yaml \
-                    -f compose/compose-net-org11.yaml \
-                    -f compose/compose-net-org12.yaml \
-                    -f compose/compose-net-org13.yaml \
-                    -f compose/compose-net-org14.yaml \
-                    -f compose/compose-net-org15.yaml \
-                    -f compose/compose-net-org16.yaml \
-                    -f compose/compose-net-org17.yaml \
-                    -f compose/compose-net-org18.yaml \
-                    -f compose/compose-net-org19.yaml \
-                    -f compose/compose-net-org20.yaml \
-                    -f compose/docker/docker-compose-net.yaml"
+    local temp_compose=compose-net-full.yaml
+    # COMPOSE_FILE_BASE=compose-bft-test-net.yaml
+    # COMPOSE_BASE_FILES="-f compose/compose-net-full.yaml "
 
-    COMPOSE_COUCH_FILES="-f compose/compose-couch.yaml -f compose/docker/docker-compose-couch.yaml"
-    COMPOSE_CA_FILES="-f compose/compose-ca.yaml -f compose/docker/docker-compose-ca.yaml"
+   COMPOSE_FILES="-f compose/compose-net-org1.yaml \
+                    -f compose/compose-net-org2.yaml \
+                    -f compose/docker/docker-compose-net-org1.yaml \
+                    -f compose/docker/docker-compose-net-org2.yaml \
+                    
+                    -f compose/compose-net-orderer.yaml"
+
+
+    COMPOSE_COUCH_FILES="-f compose/compose-couch.yaml"
+    COMPOSE_CA_FILES="-f compose/compose-ca.yaml"
     COMPOSE_FILES="${COMPOSE_BASE_FILES} ${COMPOSE_COUCH_FILES} ${COMPOSE_CA_FILES}"
 
-    DOCKER_SOCK=$DOCKER_SOCK docker-compose ${COMPOSE_FILES} ${COMPOSE_ORG3_FILES} down --volumes --remove-orphans
+    DOCKER_SOCK=$DOCKER_SOCK docker-compose ${COMPOSE_FILES} down --volumes --remove-orphans
 
-    COMPOSE_FILE_BASE=$temp_compose
 
     # Don't remove the generated artifacts -- note, the ledgers are always removed
 
@@ -70,6 +76,8 @@ function networkDown() {
     # docker volume rm compose_orderer0.orderer.example.com compose_orderer1.orderer.example.com compose_orderer2.orderer.example.com compose_peer0.org1.example.com compose_peer0.org2.example.com compose_peer0.org3.example.com
     # 删除所有与组织相关的卷
     docker volume rm $(docker volume ls -q | grep "compose_.*\.example\.com")
+    docker volume rm $(docker volume ls -q | grep "compose-.*\.example\.com")
+
 
     #Cleanup the chaincode containers
     clearContainers
@@ -89,5 +97,7 @@ function networkDown() {
     # remove channel and script artifacts
     docker run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf channel-artifacts log.txt *.tar.gz'
 }
+
+
 infoln "Stopping network"
 networkDown

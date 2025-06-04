@@ -2,6 +2,8 @@
 
 source scripts/utils.sh
 
+# 组织数量
+
 CHANNEL_NAME=${1:-"mychannel"}
 CC_NAME=${2}
 CC_SRC_PATH=${3}
@@ -14,6 +16,13 @@ CC_COLL_CONFIG=${9:-"NA"}
 DELAY=${10:-"3"}
 MAX_RETRY=${11:-"5"}
 VERBOSE=${12:-"false"}
+Nums_Org=${13:-"20"}
+Nums_Peer=${14:-"25"}
+# CHANNEL_NAME="mychannel"
+# CRYPTO_MODE="Certificate Authorities"
+# CC_NAME="datatrading"
+# CC_SRC_PATH="../datatrading-chaincode/chaincode-go/"
+# CC_SRC_LANGUAGE="go"
 
 println "executing with the following"
 println "- CHANNEL_NAME: ${C_GREEN}${CHANNEL_NAME}${C_RESET}"
@@ -74,58 +83,51 @@ checkPrereqs
 PACKAGE_ID=$(peer lifecycle chaincode calculatepackageid ${CC_NAME}.tar.gz)
 
 
-# 组织数量
-ORG_COUNT=20
-
-
-# 安装链码到所有组织
-for (( i=1; i<=ORG_COUNT; i++ ))
+# 安装链码到该组织的所有节点
+for (( i=1; i<=$Nums_Org; i++ ))
 do
-  infoln "Installing chaincode on peer0.org$i..."
-  installChaincode $i
-done
-
-resolveSequence
-
-# 查询每个组织是否安装链码
-for (( i=1; i<=ORG_COUNT; i++ ))
-do
-  queryInstalled $i
-done
-
-# 依次审批每个组织的链码
-for (( i=1; i<=ORG_COUNT; i++ ))
-do
-  approveForMyOrg $i
-  # 检查每个组织的链码提交准备状态
-  for (( j=1; j<=ORG_COUNT; j++ ))
+  for (( p=0; p<$Nums_Peer; p++ ))
   do
-    if [ $j -le $i ]; then
-      checkCommitReadiness $j "\"Org${j}MSP\": true"
-    else
-      checkCommitReadiness $j "\"Org${j}MSP\": false"
-    fi
+    infoln "Installing chaincode on peer${p}.org${i}..."
+    installChaincode $i $p
   done
 done
 
 
-# 提交链码定义
-commitChaincodeDefinition $(seq 1 $ORG_COUNT)
+resolveSequence
 
-# 查询提交的链码定义
-for (( i=1; i<=ORG_COUNT; i++ ))
+# 查询每个组织的每个节点是否安装链码
+for (( i=1; i<=$Nums_Org; i++ ))
 do
-  queryCommitted $i
+  for ((  p=0; p<$Nums_Peer; p++ ))
+  do
+    queryInstalled $i $p
+  done
 done
 
-# 调用链码
-if [ "$CC_INIT_FCN" = "NA" ]; then
-  infoln "Chaincode initialization is not required"
-else
-  chaincodeInvokeInit $(seq 1 $ORG_COUNT)
-fi
 
-exit 0
+
+# 每个组织批准一次
+for (( i=1; i<=$Nums_Org; i++ ))
+do
+  approveForMyOrg $i
+done
+
+
+# checkCommitReadiness用于验证各个节点是否批准，一个组织使用一个节点(这里忽略)
+
+# 使用代表节点提交链码定义
+infoln "Committing chaincode definition using representative peers..."
+commitChaincodeDefinition $(seq -s " " 1 $Nums_Org)
+# commitChaincodeDefinition 1 2 3 4 5 6 7 8 9 10
+
+
+# 查询组织是否有链码定义
+for (( i=1; i<=$Nums_Org; i++ ))
+do
+  queryCommitted $i 
+done
+
 
 # ## Install chaincode on peer0.org1 and peer0.org2
 # infoln "Installing chaincode on peer0.org1..."

@@ -14,10 +14,10 @@ trap "popd > /dev/null" EXIT
 SOCK="${DOCKER_HOST:-/var/run/docker.sock}"
 DOCKER_SOCK="${SOCK##unix://}"
 
-# 加载default
+# import default
 . ./network.config
 
-# 参数设置
+# set the Global variable
 CHANNEL_NAME="mychannel"
 CRYPTO_MODE="Certificate Authorities"
 CC_NAME="datatrading"
@@ -32,7 +32,12 @@ CC_SRC_LANGUAGE="go"
 # MAX_RETRY = 5
 # CLI_DELAY = 3
 
-# 检查Fabric环境配置、添加DNS解析
+# 组织和节点数量
+# 组织和节点数量
+Org_Count=20 # 组织数量只涉及到了重命名
+Peer_Count=25
+
+# check the Fabric environment configuration and add DNS resolution
 function checkPrereqs() {
     ## Check if your have cloned the peer binaries and configuration files.
     peer version >/dev/null 2>&1
@@ -90,7 +95,7 @@ function checkPrereqs() {
     # infoln "set DNS for network"
 
 }
-# 结束网络
+# Stop the network
 # Obtain CONTAINER_IDS and remove them
 # This function is called when you bring a network down
 function clearContainers() {
@@ -110,37 +115,22 @@ function removeUnwantedImages() {
 
 # Tear down running network
 function networkDown() {
-    local temp_compose=compose-net.yaml
-    #   COMPOSE_FILE_BASE=compose-bft-test-net.yaml
-    # COMPOSE_BASE_FILES="-f compose/compose-net.yaml -f compose/docker/docker-compose-net.yaml"
-    COMPOSE_BASE_FILES="-f compose/compose-net-orderer.yaml \
-                    -f compose/compose-net-org1.yaml \
-                    -f compose/compose-net-org2.yaml \
-                    -f compose/compose-net-org3.yaml \
-                    -f compose/compose-net-org4.yaml \
-                    -f compose/compose-net-org5.yaml \
-                    -f compose/compose-net-org6.yaml \
-                    -f compose/compose-net-org7.yaml \
-                    -f compose/compose-net-org8.yaml \
-                    -f compose/compose-net-org9.yaml \
-                    -f compose/compose-net-org10.yaml \
-                    -f compose/compose-net-org11.yaml \
-                    -f compose/compose-net-org12.yaml \
-                    -f compose/compose-net-org13.yaml \
-                    -f compose/compose-net-org14.yaml \
-                    -f compose/compose-net-org15.yaml \
-                    -f compose/compose-net-org16.yaml \
-                    -f compose/compose-net-org17.yaml \
-                    -f compose/compose-net-org18.yaml \
-                    -f compose/compose-net-org19.yaml \
-                    -f compose/compose-net-org20.yaml \
-                    -f compose/docker/docker-compose-net.yaml"
+    local temp_compose=compose-net-full.yaml
+    # COMPOSE_FILE_BASE=compose-bft-test-net.yaml
+    # COMPOSE_BASE_FILES="-f compose/compose-net-full.yaml "
 
-    COMPOSE_COUCH_FILES="-f compose/compose-couch.yaml -f compose/docker/docker-compose-couch.yaml"
-    COMPOSE_CA_FILES="-f compose/compose-ca.yaml -f compose/docker/docker-compose-ca.yaml"
+   COMPOSE_FILES="-f compose/compose-net-org1.yaml \
+                    -f compose/compose-net-org2.yaml \
+                    -f compose/docker/docker-compose-net-org1.yaml \
+                    -f compose/docker/docker-compose-net-org2.yaml \
+                    -f compose/compose-net-orderer.yaml"
+
+
+    COMPOSE_COUCH_FILES="-f compose/compose-couch.yaml"
+    COMPOSE_CA_FILES="-f compose/ompose-ca.yaml"
     COMPOSE_FILES="${COMPOSE_BASE_FILES} ${COMPOSE_COUCH_FILES} ${COMPOSE_CA_FILES}"
 
-    DOCKER_SOCK=$DOCKER_SOCK docker-compose ${COMPOSE_FILES} ${COMPOSE_ORG3_FILES} down --volumes --remove-orphans
+    DOCKER_SOCK=$DOCKER_SOCK docker-compose ${COMPOSE_FILES} down --volumes --remove-orphans
 
     COMPOSE_FILE_BASE=$temp_compose
 
@@ -151,6 +141,8 @@ function networkDown() {
     # docker volume rm compose_orderer0.orderer.example.com compose_orderer1.orderer.example.com compose_orderer2.orderer.example.com compose_peer0.org1.example.com compose_peer0.org2.example.com compose_peer0.org3.example.com
     # 删除所有与组织相关的卷
     docker volume rm $(docker volume ls -q | grep "compose_.*\.example\.com")
+    docker volume rm $(docker volume ls -q | grep "compose-.*\.example\.com")
+
 
     #Cleanup the chaincode containers
     clearContainers
@@ -178,7 +170,7 @@ function createOrgs() {
     fi
 
     infoln "Generating certificates using Fabric CA"
-    docker-compose -f compose/compose-ca.yaml -f compose/docker/docker-compose-ca.yaml up -d 2>&1
+    docker-compose  -f compose/compose-ca.yaml -f compose/docker/docker-compose-ca.yaml up -d 2>&1
 
     . scripts/registerEnroll.sh
 
@@ -192,75 +184,24 @@ function createOrgs() {
     done
     
     infoln "Creating Org1 Identities"
-    createOrg "org1" "7054" "ca-org1"
+    createOrg "org1" "7054" "ca-org1" "$Peer_Count"
 
     infoln "Creating Org2 Identities"
-    createOrg "org2" "8054" "ca-org2"
+    createOrg "org2" "8054" "ca-org2" "$Peer_Count"
 
-    infoln "Creating Org3 Identities"
-    createOrg "org3" "9054" "ca-org3"
-
-    infoln "Creating Org4 Identities"
-    createOrg "org4" "10054" "ca-org4"
-
-    infoln "Creating Org5 Identities"
-    createOrg "org5" "11054" "ca-org5"
-
-    infoln "Creating Org6 Identities"
-    createOrg "org6" "12054" "ca-org6"
-
-    infoln "Creating Org7 Identities"
-    createOrg "org7" "13054" "ca-org7"
-
-    infoln "Creating Org8 Identities"
-    createOrg "org8" "14054" "ca-org8"
-
-    infoln "Creating Org9 Identities"
-    createOrg "org9" "15054" "ca-org9"
-
-    infoln "Creating Org10 Identities"
-    createOrg "org10" "16054" "ca-org10"
-
-    infoln "Creating Org11 Identities"
-    createOrg "org11" "17054" "ca-org11"
-
-    infoln "Creating Org12 Identities"
-    createOrg "org12" "18054" "ca-org12"
-
-    infoln "Creating Org13 Identities"
-    createOrg "org13" "19054" "ca-org13"
-
-    infoln "Creating Org14 Identities"
-    createOrg "org14" "20054" "ca-org14"
-
-    infoln "Creating Org15 Identities"
-    createOrg "org15" "21054" "ca-org15"
-
-    infoln "Creating Org16 Identities"
-    createOrg "org16" "22054" "ca-org16"
-
-    infoln "Creating Org17 Identities"
-    createOrg "org17" "23054" "ca-org17"
-
-    infoln "Creating Org18 Identities"
-    createOrg "org18" "24054" "ca-org18"
-
-    infoln "Creating Org19 Identities"
-    createOrg "org19" "25054" "ca-org19"
-
-    infoln "Creating Org20 Identities"
-    createOrg "org20" "26054" "ca-org20"
 
     infoln "Creating Orderer Org Identities"
     createOrderer
 
     infoln "Generating CCP files for Orgs"
     ./organizations/ccp-generate.sh
+
+    # 重命名密钥文件
+    renameAdminKeys
 }
 
 # 开启网络
 function networkUp() {
-
     checkPrereqs
     # generate artifacts if they don't exist
     if [ ! -d "organizations/peerOrganizations" ]; then
@@ -268,31 +209,20 @@ function networkUp() {
     fi
 
     # 基础docker文件，扩展文件（docker sock）
-    # COMPOSE_FILES="-f compose/compose-net.yaml -f compose/docker/docker-compose-net.yaml"
-    COMPOSE_FILES=" -f compose/compose-net-orderer.yaml \
-                    -f compose/compose-net-org1.yaml \
-                    -f compose/compose-net-org2.yaml \
-                    -f compose/compose-net-org3.yaml \
-                    -f compose/compose-net-org4.yaml \
-                    -f compose/compose-net-org5.yaml \
-                    -f compose/compose-net-org6.yaml \
-                    -f compose/compose-net-org7.yaml \
-                    -f compose/compose-net-org8.yaml \
-                    -f compose/compose-net-org9.yaml \
-                    -f compose/compose-net-org10.yaml \
-                    -f compose/compose-net-org11.yaml \
-                    -f compose/compose-net-org12.yaml \
-                    -f compose/compose-net-org13.yaml \
-                    -f compose/compose-net-org14.yaml \
-                    -f compose/compose-net-org15.yaml \
-                    -f compose/compose-net-org16.yaml \
-                    -f compose/compose-net-org17.yaml \
-                    -f compose/compose-net-org18.yaml \
-                    -f compose/compose-net-org19.yaml \
-                    -f compose/compose-net-org20.yaml \
-                    -f compose/docker/docker-compose-net.yaml"
+    # COMPOSE_BASE_FILES="-f compose/compose-net-full.yaml "
+    COMPOSE_FILES_1="-f compose/compose-net-org1.yaml \
+                    -f compose/docker/docker-compose-net-org1.yaml"
+    COMPOSE_FILES_2="-f compose/compose-net-org2.yaml \
+                    -f compose/docker/docker-compose-net-org2.yaml"
 
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES} up -d 2>&1
+    COMPOSE_FILES_orderer="-f compose/compose-net-orderer.yaml"
+
+
+    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_1} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_2} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_orderer} up -d 2>&1
+
+    
 
     docker ps -a
     if [ $? -ne 0 ]; then
@@ -300,15 +230,8 @@ function networkUp() {
     fi
 }
 
-# 启动网络
-infoln "Starting nodes with CLI timeout of '${MAX_RETRY}' tries and CLI delay of '${CLI_DELAY}' seconds and using database '${DATABASE}' ${CRYPTO_MODE}"
-networkUp
-
-# 创建通道
-
 function createChannel() {
     # Bring up the network if it is not already up.
-
     bringUpNetwork="false"
     #   local bft_true=$1
 
@@ -336,40 +259,20 @@ function createChannel() {
 
     # now run the script that creates a channel. This script uses configtxgen once
     # to create the channel creation transaction and the anchor peer updates.
-    scripts/createChannel.sh $CHANNEL_NAME $CLI_DELAY $MAX_RETRY $VERBOSE
+    scripts/createChannel.sh $Nums_Org $Nums_Peer $CHANNEL_NAME $CLI_DELAY $MAX_RETRY $VERBOSE
     #   $bft_true
 }
 
-infoln "Creating channel '${CHANNEL_NAME}'."
-infoln "If network is not up, starting nodes with CLI timeout of '${MAX_RETRY}' tries and CLI delay of '${CLI_DELAY}' seconds and using database '${DATABASE} ${CRYPTO_MODE}"
-createChannel
-
-# 部署链码
-# start to deploy chaincode
-export FABRIC_CFG_PATH=${PWD}/../config/
 
 ## Call the script to deploy a chaincode to the channel
 function deployCC() {
-    scripts/deployCC.sh $CHANNEL_NAME $CC_NAME $CC_SRC_PATH $CC_SRC_LANGUAGE $CC_VERSION $CC_SEQUENCE $CC_INIT_FCN $CC_END_POLICY $CC_COLL_CONFIG $CLI_DELAY $MAX_RETRY $VERBOSE
+    scripts/deployCC.sh $CHANNEL_NAME $CC_NAME $CC_SRC_PATH $CC_SRC_LANGUAGE $CC_VERSION $CC_SEQUENCE $CC_INIT_FCN $CC_END_POLICY $CC_COLL_CONFIG $CLI_DELAY $MAX_RETRY $VERBOSE 
 
     if [ $? -ne 0 ]; then
         fatalln "Deploying chaincode failed"
     fi
 }
 
-infoln "deploying chaincode on channel '${CHANNEL_NAME}'"
-deployCC
-
-## Call the script to deploy a chaincode to the channel
-# function deployCCAAS() {
-#     scripts/deployCCAAS.sh $CHANNEL_NAME $CC_NAME $CC_SRC_PATH $CCAAS_DOCKER_RUN $CC_VERSION $CC_SEQUENCE $CC_INIT_FCN $CC_END_POLICY $CC_COLL_CONFIG $CLI_DELAY $MAX_RETRY $VERBOSE $CCAAS_DOCKER_RUN
-
-#     if [ $? -ne 0 ]; then
-#         fatalln "Deploying chaincode-as-a-service failed"
-#     fi
-# }
-
-## Call the script to package the chaincode
 function packageChaincode() {
 
     infoln "Packaging chaincode"
@@ -391,7 +294,7 @@ function listChaincode() {
     . scripts/ccutils.sh
 
     infoln "setGlobals for org1"
-    setGlobals 1
+    setGlobals 1 0
     infoln "query chaincode Installed On Peer"
     println
     queryInstalledOnPeer
@@ -400,7 +303,7 @@ function listChaincode() {
     listAllCommitted
 
     infoln "setGlobals for org2"
-    setGlobals 2
+    setGlobals 2 0
     infoln "query chaincode Installed On Peer"
     println
     queryInstalledOnPeer
@@ -409,7 +312,7 @@ function listChaincode() {
     listAllCommitted
 
     infoln "setGlobals for org3"
-    setGlobals 3
+    setGlobals 3 0
     infoln "query chaincode Installed On Peer"
     println
     queryInstalledOnPeer
@@ -419,41 +322,58 @@ function listChaincode() {
 
 }
 
-infoln "test:query the chaincode installed for 1/2/3"
-listChaincode
+# 重命名
+function renameAdminKeys() {
+    infoln "Renaming admin keystore files for $Org_Count organizations"
+    
+    # 根据组织数量动态遍历
+    for ((i=1; i<=$Org_Count; i++)); do
+        KEYSTORE_DIR="organizations/peerOrganizations/org${i}.example.com/users/Admin@org${i}.example.com/msp/keystore"
+        if [ -d "$KEYSTORE_DIR" ]; then
+            # 重命名找到的 *_sk 文件为 priv_sk
+            find "$KEYSTORE_DIR" -name "*_sk" -exec mv {} "$KEYSTORE_DIR/priv_sk" \;
+            successln "Renamed keystore file for org${i}"
+        fi
+    done
+}
 
-infoln "set the peer environment virable"
+
+
+
+# ------------> START <-------------
+
+# 生成Docker配置文件
+./scripts/generateEnv.sh
+./scripts/generateComposeCA.sh
+./scripts/generateComposeNet.sh
+./scripts/generateComposeNetDocker.sh
+./scripts/generateExplorer.sh
+./scripts/setDNS.sh
+
+# 启动网络
+infoln "Starting nodes with CLI timeout of '${MAX_RETRY}' tries and CLI delay of '${CLI_DELAY}' seconds and using database '${DATABASE}' ${CRYPTO_MODE}"
+networkUp
+
+# 创建通道
+
+infoln "Creating channel '${CHANNEL_NAME}'."
+infoln "If network is not up, starting nodes with CLI timeout of '${MAX_RETRY}' tries and CLI delay of '${CLI_DELAY}' seconds and using database '${DATABASE} ${CRYPTO_MODE}"
+createChannel
+
+# 部署链码
+# start to deploy chaincode
 export PATH=${PWD}/../bin:$PATH
-export FABRIC_CFG_PATH=$PWD/../config/
-export CORE_PEER_TLS_ENABLED=true
-export CORE_PEER_LOCALMSPID="Org1MSP"
-export CORE_PEER_ADDRESS=peer0.org1.example.com:7051
-export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
-export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+export FABRIC_CFG_PATH=${PWD}/../config/
+deployCC
 
-## Call the script to invoke
-# function invokeChaincode() {
+# # infoln "test:query the chaincode installed for 1/2/3"
+# # listChaincode
 
-#     export FABRIC_CFG_PATH=${PWD}/../config
-
-#     . scripts/envVar.sh
-#     . scripts/ccutils.sh
-
-#     setGlobals $ORG
-
-#     chaincodeInvoke $ORG $CHANNEL_NAME $CC_NAME $CC_INVOKE_CONSTRUCTOR
-
-# }
-## Call the script to query chaincode
-# function queryChaincode() {
-
-#     export FABRIC_CFG_PATH=${PWD}/../config
-
-#     . scripts/envVar.sh
-#     . scripts/ccutils.sh
-
-#     setGlobals $ORG
-
-#     chaincodeQuery $ORG $CHANNEL_NAME $CC_NAME $CC_QUERY_CONSTRUCTOR
-
-# }
+# infoln "set the peer environment virable"
+# export PATH=${PWD}/../bin:$PATH
+# export FABRIC_CFG_PATH=$PWD/../config/
+# export CORE_PEER_TLS_ENABLED=true
+# export CORE_PEER_LOCALMSPID="Org1MSP"
+# export CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+# export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+# export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp

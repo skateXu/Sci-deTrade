@@ -1,43 +1,17 @@
 version: '3.7'
 
-x-CA-defaults: &ca-defaults
-  image: hyperledger/fabric-ca:latest
-  labels:
-    service: hyperledger-fabric
-  environment: &ca-env-defaults
-    - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-    - FABRIC_CA_SERVER_CA_NAME=ca-${ORG}
-    - FABRIC_CA_SERVER_TLS_ENABLED=true
-    - FABRIC_CA_SERVER_PORT=${CAPORT}
-    - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:${CAOPLISSEN}
-  ports:
-    - ${CAPORT}:${CAPORT}
-    - ${CAOPLISSEN}:${CAOPLISSEN}
-  command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
-  volumes:
-    - ../organizations/fabric-ca/${ORG}:/etc/hyperledger/fabric-ca-server
-  container_name: ca_${ORG}
-  networks:
-    - test
+networks:
+  test:
+    name: fabric_test
 
 services:
-  ca_${ORG}:
-    <<: *ca-defaults
-    image: hyperledger/fabric-ca:latest
+  ca-defaults:
     labels:
       service: hyperledger-fabric
-    environment: &ca-env-defaults
+    environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca-${ORG}
       - FABRIC_CA_SERVER_TLS_ENABLED=true
-      - FABRIC_CA_SERVER_PORT=${CAPORT}
-      - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:${CAOPLISSEN}
-    ports:
-      - ${CAPORT}:${CAPORT}
-      - ${CAOPLISSEN}:${CAOPLISSEN}
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
-    volumes:
-      - ../organizations/fabric-ca/${ORG}:/etc/hyperledger/fabric-ca-server
-    container_name: ca_${ORG}
     networks:
       - test
+
