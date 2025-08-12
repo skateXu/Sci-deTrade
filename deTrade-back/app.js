@@ -241,6 +241,23 @@ app.get('/downloadFile', async (req, res) => {
 
 
 
+// 接收并打印测试数据
+app.post('/testData', async (req, res) => {
+    try {
+        const { testData } = req.body;
+        if (typeof testData === 'undefined') {
+            return res.status(400).json({ success: false, error: 'testData is required' });
+        }
+        console.log('[TEST_DATA]', testData);
+        res.json({ success: true, received: testData });
+    } catch (error) {
+        console.error('testData fail', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+
+
 app.listen(serverConfig.port, () => {
     console.log(`Server is running on port ${serverConfig.port}`);
   });

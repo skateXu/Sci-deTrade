@@ -45,7 +45,7 @@ const n = ref('');
 // 获取订单信息
 const fetchOrder = async () => {
   try {
-    const response = await axios.get('/getorder',{params: { id: route.params.id },});
+    let response = await axios.get('/getorder',{params: { id: route.params.id },});
     order.value = response.data.order;
     response = await axios.get('/getdataset',{ params: { id: order.value.DatasetID } });
     dataset.value = response.data.dataset;
@@ -58,7 +58,7 @@ const fetchOrder = async () => {
 const submitEncryptionKey = async () => {
   try {
     // 调用后端接口，传递加密密钥口令
-    const response = await axios.post('/submitKey', {
+    let response = await axios.post('/submitKey', {
 
       encryptionKey: encryptionKey.value
     });

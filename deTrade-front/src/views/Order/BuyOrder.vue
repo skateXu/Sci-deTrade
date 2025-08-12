@@ -44,7 +44,7 @@ const secretKey = ref('');
 // 获取订单信息
 const fetchOrder = async () => {
   try {
-    const response = await axios.get('/getorder',{params: { id: route.params.id },});
+    let response = await axios.get('/getorder',{params: { id: route.params.id },});
     order.value = response.data.order;
     response = await axios.get('/getdataset',{ params: { id: order.value.DatasetID } });
     dataset.value = response.data.dataset;
@@ -57,7 +57,7 @@ const fetchOrder = async () => {
 const submitSecretKey = async () => {
   try {
     // 调用后端接口，传递加密密钥口令
-    const response = await axios.post('/submitSecret', {
+    let response = await axios.post('/submitSecret', {
       encryptionKey: encryptionKey.value
     });
     // 将返回的支付密钥填入输入框

@@ -77,6 +77,7 @@ onUnmounted(() => {
       </div>
     </div>
   </div>
+  
   <Header>
     <div
       class="page-header min-vh-50"
@@ -101,9 +102,19 @@ onUnmounted(() => {
     </div>
   </Header>
 
+  
+
   <div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n6">
     <HomeInformation />
     <HomeExample  v-if="data" :data="data"/>
   </div>
+
+  <!--创建一个转入test_page的按钮-->
+  <div class="text-center">
+    <RouterLink to="/test">
+      <button class="btn btn-primary">测试</button>
+    </RouterLink>
+  </div>
+  
 
 </template>

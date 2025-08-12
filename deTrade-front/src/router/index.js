@@ -10,6 +10,7 @@ import CreateOrder from "../views/Market/CreateOrder.vue";
 import SellOrder from "../views/Order/SellOrder.vue";
 import BuyOrder from "../views/Order/BuyOrder.vue";
 import DataView from "../views/Data/DataView.vue";
+import test_page from "../views/test_page/test_page.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -72,6 +73,12 @@ const router = createRouter({
       path: "/create",
       name: "create",
       component: DataView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/test",
+      name: "test",
+      component: test_page,
       meta: { requiresAuth: true },
     },
   ],
