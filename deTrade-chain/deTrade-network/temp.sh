@@ -149,10 +149,10 @@ function networkUp() {
     # 根据组织数目启动对应数量的组织节点
     for i in $(seq 1 ${Org_Count}); do
         COMPOSE_FILE_VAR="COMPOSE_FILES_${i}"
-        DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${!COMPOSE_FILE_VAR} up -d 2>&1
+        DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${!COMPOSE_FILE_VAR} up -d 2>&1
     done
 
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_orderer} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_orderer} up -d 2>&1
 
     docker ps -a
     if [ $? -ne 0 ]; then
@@ -260,7 +260,7 @@ function renameAdminKeys() {
 
 #启动CA
 infoln "Generating certificates using Fabric CA"
-docker-compose  -f compose/compose-ca.yaml -f compose/docker/docker-compose-ca.yaml up -d 2>&1
+docker compose  -f compose/compose-ca.yaml -f compose/docker/docker-compose-ca.yaml up -d 2>&1
 
 if [ $Flag -eq 1 ]; then
     createOrgs

@@ -57,7 +57,7 @@ function createOrgs() {
     fi
 
     infoln "Generating certificates using Fabric CA"
-    docker-compose  -f compose/compose-ca.yaml -f compose/docker/docker-compose-ca.yaml up -d 2>&1
+    docker compose  -f compose/compose-ca.yaml -f compose/docker/docker-compose-ca.yaml up -d 2>&1
 
     . scripts/registerEnroll.sh
 
@@ -144,7 +144,7 @@ function createOrgs() {
 function networkUp() {
     infoln "Generating certificates using Fabric CA"
     # 启动CA
-    docker-compose  -f compose/compose-ca.yaml -f compose/docker/docker-compose-ca.yaml up -d 2>&1
+    docker compose  -f compose/compose-ca.yaml -f compose/docker/docker-compose-ca.yaml up -d 2>&1
 
     # 基础docker文件，扩展文件（docker sock）
     # COMPOSE_BASE_FILES="-f compose/compose-net-full.yaml "
@@ -210,27 +210,27 @@ function networkUp() {
     COMPOSE_FILES_orderer="-f compose/compose-net-orderer.yaml"
 
 
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_1} up -d 2>&1
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_2} up -d 2>&1
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_3} up -d 2>&1
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_4} up -d 2>&1
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_5} up -d 2>&1
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_6} up -d 2>&1
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_7} up -d 2>&1
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_8} up -d 2>&1
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_9} up -d 2>&1
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_10} up -d 2>&1
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_11} up -d 2>&1      
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_12} up -d 2>&1
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_13} up -d 2>&1
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_14} up -d 2>&1
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_15} up -d 2>&1
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_16} up -d 2>&1
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_17} up -d 2>&1
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_18} up -d 2>&1
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_19} up -d 2>&1
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_20} up -d 2>&1
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_orderer} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_1} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_2} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_3} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_4} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_5} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_6} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_7} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_8} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_9} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_10} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_11} up -d 2>&1      
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_12} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_13} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_14} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_15} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_16} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_17} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_18} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_19} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_20} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_orderer} up -d 2>&1
 
 
     # DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES} up -d 2>&1

@@ -75,7 +75,7 @@ function networkDown() {
     done
     COMPOSE_FILES="${COMPOSE_FILES}${COMPOSE_FILES_orderer}${COMPOSE_FILES_ca}"
 
-    DOCKER_SOCK=$DOCKER_SOCK docker-compose ${COMPOSE_FILES} down --volumes --remove-orphans
+    DOCKER_SOCK=$DOCKER_SOCK docker compose ${COMPOSE_FILES} down --volumes --remove-orphans
 
     # Don't remove the generated artifacts -- note, the ledgers are always removed
 

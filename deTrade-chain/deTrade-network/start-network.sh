@@ -130,7 +130,7 @@ function networkDown() {
     COMPOSE_CA_FILES="-f compose/ompose-ca.yaml"
     COMPOSE_FILES="${COMPOSE_BASE_FILES} ${COMPOSE_COUCH_FILES} ${COMPOSE_CA_FILES}"
 
-    DOCKER_SOCK=$DOCKER_SOCK docker-compose ${COMPOSE_FILES} down --volumes --remove-orphans
+    DOCKER_SOCK=$DOCKER_SOCK docker compose ${COMPOSE_FILES} down --volumes --remove-orphans
 
     COMPOSE_FILE_BASE=$temp_compose
 
@@ -170,7 +170,7 @@ function createOrgs() {
     fi
 
     infoln "Generating certificates using Fabric CA"
-    docker-compose  -f compose/compose-ca.yaml -f compose/docker/docker-compose-ca.yaml up -d 2>&1
+    docker compose  -f compose/compose-ca.yaml -f compose/docker/docker-compose-ca.yaml up -d 2>&1
 
     . scripts/registerEnroll.sh
 
@@ -218,9 +218,9 @@ function networkUp() {
     COMPOSE_FILES_orderer="-f compose/compose-net-orderer.yaml"
 
 
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_1} up -d 2>&1
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_2} up -d 2>&1
-    DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES_orderer} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_1} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_2} up -d 2>&1
+    DOCKER_SOCK="${DOCKER_SOCK}" docker compose ${COMPOSE_FILES_orderer} up -d 2>&1
 
     
 
